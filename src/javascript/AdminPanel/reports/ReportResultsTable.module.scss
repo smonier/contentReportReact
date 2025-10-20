@@ -1,0 +1,161 @@
+.tableContainer {
+    margin-top: 24px;
+
+    // Override Moonstone table styles to allow row expansion
+    :global {
+        .moonstone-table {
+            table-layout: auto !important;
+        }
+
+        .moonstone-table-row {
+            height: auto !important;
+            min-height: 48px !important;
+        }
+
+        .moonstone-table-body-cell {
+            height: auto !important;
+            min-height: 48px !important;
+            vertical-align: middle !important;
+            padding: 12px 16px !important;
+        }
+    }
+}
+
+.resultsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.exportButtons {
+    display: flex;
+    gap: 8px;
+}
+
+.table {
+    width: 100%;
+    table-layout: auto;
+
+    // Ensure all table cells can wrap content properly
+    :global {
+        td, th {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        // Allow table rows to expand based on content
+        tr {
+            height: auto !important;
+            min-height: 48px !important;
+        }
+
+        // Ensure table body cells can expand
+        tbody td {
+            vertical-align: middle;
+            height: auto !important;
+            min-height: 48px !important;
+            padding: 12px 16px;
+        }
+    }
+}
+
+.sortableHeader {
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s ease;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.04);
+    }
+}
+
+.headerContent {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.sortIcon {
+    font-size: 10px;
+    color: #5c6f90;
+    margin-left: 4px;
+}
+
+.titleCell {
+    font-weight: 500;
+    max-width: 300px;
+    word-break: break-word;
+}
+
+.pathCell {
+    font-family: monospace;
+    font-size: 12px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+
+.pathLink {
+    color: var(--color-primary, #007bff);
+    text-decoration: none;
+    
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.dateCell {
+    white-space: nowrap;
+    font-size: 12px;
+}
+
+.lockCell {
+    text-align: center;
+    font-size: 16px;
+}
+
+.booleanCell {
+    text-align: center;
+    font-size: 18px;
+}
+
+.booleanTrue {
+    color: #22863a;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.booleanFalse {
+    color: #d73a49;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.htmlCell {
+    white-space: normal !important;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: none;
+    min-width: 200px;
+    min-height: 48px;
+    vertical-align: middle !important;
+    height: auto !important;
+    padding: 12px 16px !important;
+    
+    // Ensure content inside spans also wraps
+    span {
+        display: block;
+        white-space: normal !important;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+}
+
+.noResults {
+    padding: 32px;
+    text-align: center;
+    color: var(--color-text-secondary, #999);
+}
