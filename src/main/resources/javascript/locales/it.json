@@ -1,0 +1,249 @@
+{
+  "contentReportReact": {
+    "label": "Report dei Contenuti",
+    "header": "Report dei Contenuti - Sito {{siteInfo}}",
+    "categories": {
+      "overview": "Panoramica",
+      "content": "Contenuto",
+      "languages": "Lingue",
+      "visibility": "Visibilità",
+      "metadata": "Metadati",
+      "system": "Sistema"
+    },
+    "menu": {
+      "overview": "Panoramica del sito",
+      "byAuthor": "Per autore",
+      "byAllDate": "Per tutte le date",
+      "beforeDate": "Prima della data",
+      "byType": "Per tipo",
+      "byTypeDetailed": "Per tipo (dettagliato)",
+      "byStatus": "Per stato",
+      "byLanguage": "Lingue",
+      "byLanguageDetailed": "Dettaglio lingua",
+      "pagesWithoutTitle": "Pagine senza titolo",
+      "pagesWithoutKeywords": "Pagine senza parole chiave",
+      "pagesWithoutDescription": "Pagine senza descrizione",
+      "contentFromAnotherSite": "Contenuto da un altro sito",
+      "byOrphanContent": "Contenuto orfano",
+      "lockedContent": "Contenuto bloccato",
+      "wipContent": "Lavori in corso",
+      "contentWaitingPublication": "Istanze di flusso di lavoro",
+      "customCacheContent": "Contenuto cache personalizzato",
+      "aclInheritanceBreak": "Interruzione ereditarietà ACL",
+      "byAuthorAndDate": "Per autore e data",
+      "pagesUntranslated": "Contenuto non tradotto",
+      "references": "Riferimenti",
+      "markedForDeletion": "Contrassegnato per l'eliminazione",
+      "liveContents": "Condizioni di visibilità dal vivo",
+      "expiredContents": "Contenuto scaduto",
+      "futureContents": "Contenuto programmato"
+    },
+    "descriptions": {
+      "overview": "Ottieni un'istantanea delle metriche chiave del sito selezionato.",
+      "byAuthor": "Elenca i contenuti creati o modificati da autori specifici.",
+      "byAllDate": "Scomponi l'attività dei contenuti per mese e tipo.",
+      "references": "Il report contiene solo i contenuti utilizzati in qualsiasi pagina. I contenuti non utilizzati dalle cartelle dei contenuti non verranno visualizzati.",
+      "byAuthorAndDate": "Filtra i contenuti combinando criteri di data e autore.",
+      "wipContent": "Visualizza i contenuti contrassegnati come Lavori in Corso (WIP). Questi elementi sono ancora in fase di modifica e non sono pronti per la pubblicazione.",
+      "contentWaitingPublication": "Elenca tutti i contenuti che hanno un'attività di flusso di lavoro in sospeso. Ciò include contenuti in attesa di revisione, approvazione o pubblicazione.",
+      "markedForDeletion": "Visualizza i contenuti contrassegnati per l'eliminazione. Questo report mostra gli elementi contrassegnati per la rimozione insieme al numero di nodi figlio interessati.",
+      "lockedContent": "Visualizza tutti i contenuti attualmente bloccati dagli utenti. Questo report mostra chi ha creato il contenuto, chi lo ha bloccato e dove si trova. Utile per identificare i contenuti che potrebbero dover essere sbloccati.",
+      "customCacheContent": "Visualizza i contenuti con impostazioni di scadenza cache personalizzate. Questo report identifica i contenuti che hanno una configurazione cache specifica applicata, mostrando i valori di scadenza e aiutando a ottimizzare le prestazioni della cache.",
+      "aclInheritanceBreak": "Identifica i contenuti in cui è stata interrotta l'ereditarietà ACL (Access Control List). Questo report mostra i nodi che hanno autorizzazioni personalizzate impostate, sostituendo le autorizzazioni dai nodi padre. Utile per verificare le configurazioni di sicurezza.",
+      "pagesWithoutTitle": "Identifica le pagine a cui mancano i titoli in una o più lingue. Il report mostra il percorso e indica quali lingue hanno titoli definiti.",
+      "pagesUntranslated": "Identifica i contenuti che non sono stati tradotti in una lingua specifica. Seleziona la lingua di destinazione per trovare contenuti che esistono in altre lingue ma mancano della traduzione.",
+      "liveContents": "Visualizza i contenuti con condizioni di visibilità dal vivo. Questo report mostra i contenuti che hanno regole di visibilità condizionale applicate, mostrando le condizioni, lo stato di corrispondenza e lo stato di visibilità corrente.",
+      "expiredContents": "Visualizza i contenuti con condizioni di visibilità scadute. Questo report identifica i contenuti con date di fine visibilità già trascorse, rendendo il contenuto non più visibile sul sito live.",
+      "futureContents": "Visualizza i contenuti programmati per essere pubblicati in futuro. Questo report mostra i contenuti con date di inizio visibilità non ancora raggiunte, consentendoti di visualizzare in anteprima le prossime pubblicazioni di contenuti.",
+      "pagesWithoutKeywords": "Identifica le pagine a cui mancano le parole chiave SEO. Questo report ti aiuta a trovare pagine che necessitano di metadati di parole chiave per una migliore ottimizzazione dei motori di ricerca.",
+      "pagesWithoutDescription": "Identifica le pagine a cui mancano descrizioni in una o più lingue. Il report mostra il percorso e indica quali lingue hanno descrizioni definite per un migliore SEO e accessibilità."
+    },
+    "fields": {
+      "path": "Percorso",
+      "language": "Lingua",
+      "typeSearch": {
+        "label": "Tipo di ricerca",
+        "pages": "Solo pagine",
+        "content": "Tutti i contenuti"
+      },
+      "typeAuthor": {
+        "label": "Ambito autore",
+        "created": "Creato da",
+        "modified": "Ultima modifica di"
+      },
+      "date": "Data",
+      "searchPath": "Percorso di ricerca",
+      "searchByDate": "Filtra per data",
+      "typeDateSearch": {
+        "label": "Campo data da utilizzare",
+        "created": "Usa date di creazione",
+        "modified": "Usa date di ultima modifica"
+      },
+      "typeDateSearch.all": "Tutte le date",
+      "typeDateSearch.beforeDate": "Prima della data",
+      "dateBegin": "Data inizio",
+      "dateEnd": "Data fine",
+      "searchByAuthor": "Filtra per autore",
+      "username": "Nome utente",
+      "selectUser": "Seleziona un utente...",
+      "typeAuthorSearch": "Condizione autore",
+      "originPath": "Visualizza i riferimenti ai contenuti trovati in",
+      "destinationPath": "che fanno riferimento a contenuti da",
+      "dateRange": "Intervallo di date",
+      "authorFilters": "Filtri autore"
+    },
+    "parameters": {
+      "advanced": "Parametri avanzati",
+      "keyPlaceholder": "Nome parametro",
+      "valuePlaceholder": "Valore parametro"
+    },
+    "actions": {
+      "runReport": "Esegui report",
+      "addParameter": "Aggiungi parametro",
+      "remove": "Rimuovi",
+      "browse": "Sfoglia"
+    },
+    "common": {
+      "loading": "Caricamento..."
+    },
+    "states": {
+      "loading": "Caricamento…",
+      "lastUpdated": "Ultimo aggiornamento {{value}}"
+    },
+    "result": {
+      "nbPages": "Pagine",
+      "nbTemplates": "Moduli distribuiti",
+      "nbUsers": "Utenti registrati",
+      "nbContents": "Nodi di contenuto (jnt:content)",
+      "nbEditorialContents": "Contenuti editoriali (jmix:editorialContent)",
+      "nbWorkflowTasks": "Attività di flusso di lavoro in sospeso",
+      "nbFiles": "File (jnt:file)",
+      "nbImages": "Immagini (jmix:image)",
+      "languages": "Lingue disponibili",
+      "rawJson": "JSON grezzo",
+      "viewContent": "Visualizza"
+    },
+    "errors": {
+      "requiredField": "Il campo \"{{field}}\" è obbligatorio."
+    },
+    "reports": {
+      "byAuthorAndDate": {
+        "columns": {
+          "title": "Titolo",
+          "path": "Percorso",
+          "type": "Tipo",
+          "created": "Creato",
+          "modified": "Modificato",
+          "published": "Pubblicato",
+          "locked": "Bloccato"
+        }
+      },
+      "references": {
+        "columns": {
+          "type": "Tipo",
+          "referencedPath": "Percorso del contenuto riferito",
+          "referencePath": "Percorso del riferimento",
+          "lastModified": "Data di ultima modifica del contenuto riferito",
+          "link": "Collegamento al riferimento"
+        }
+      },
+      "wipContent": {
+        "columns": {
+          "title": "Titolo",
+          "type": "Tipo",
+          "wipStatus": "Stato WIP",
+          "path": "Percorso",
+          "page": "Pagina"
+        }
+      },
+      "contentWaitingPublication": {
+        "columns": {
+          "title": "Titolo",
+          "type": "Tipo",
+          "path": "Percorso",
+          "workflowStarted": "Flusso di lavoro avviato",
+          "workflowName": "Nome flusso di lavoro",
+          "workflowType": "Tipo di flusso di lavoro"
+        }
+      },
+      "markedForDeletion": {
+        "columns": {
+          "title": "Titolo",
+          "type": "Tipo",
+          "path": "Percorso",
+          "page": "Pagina",
+          "subNodesDeleted": "Numero di nodi figlio contrassegnati per l'eliminazione",
+          "published": "Pubblicato"
+        }
+      },
+      "pagesUntranslated": {
+        "columns": {
+          "title": "Titolo",
+          "type": "Tipo",
+          "path": "Percorso",
+          "date": "Creato"
+        }
+      },
+      "liveContents": {
+        "columns": {
+          "name": "Nome",
+          "path": "Percorso",
+          "type": "Tipo",
+          "listOfConditions": "Elenco delle condizioni",
+          "isConditionMatched": "Le condizioni dovrebbero corrispondere",
+          "currentStatus": "Stato attuale"
+        }
+      },
+      "expiredContents": {
+        "columns": {
+          "name": "Nome",
+          "path": "Percorso",
+          "type": "Tipo",
+          "expiresOn": "Scade il"
+        }
+      },
+      "futureContents": {
+        "columns": {
+          "name": "Nome",
+          "path": "Percorso",
+          "type": "Tipo",
+          "liveDate": "Data di pubblicazione"
+        }
+      },
+      "pagesWithoutKeywords": {
+        "columns": {
+          "title": "Titolo",
+          "pagePath": "Percorso pagina"
+        }
+      },
+      "pagesWithoutDescription": {
+        "columns": {
+          "path": "Percorso pagina"
+        }
+      },
+      "lockedContent": {
+        "columns": {
+          "title": "Titolo",
+          "type": "Tipo",
+          "author": "Autore",
+          "lockedBy": "Bloccato da",
+          "path": "Percorso"
+        }
+      },
+      "customCacheContent": {
+        "columns": {
+          "title": "Titolo",
+          "type": "Tipo",
+          "expiration": "Scadenza",
+          "path": "Percorso"
+        }
+      },
+      "aclInheritanceBreak": {
+        "columns": {
+          "title": "Titolo",
+          "path": "Percorso"
+        }
+      }
+    }
+  }
+}

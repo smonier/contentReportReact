@@ -1,0 +1,249 @@
+{
+  "contentReportReact": {
+    "label": "Inhaltsberichte",
+    "header": "Inhaltsberichte - Seite {{siteInfo}}",
+    "categories": {
+      "overview": "Übersicht",
+      "content": "Inhalt",
+      "languages": "Sprachen",
+      "visibility": "Sichtbarkeit",
+      "metadata": "Metadaten",
+      "system": "System"
+    },
+    "menu": {
+      "overview": "Seitenübersicht",
+      "byAuthor": "Nach Autor",
+      "byAllDate": "Nach allen Daten",
+      "beforeDate": "Vor Datum",
+      "byType": "Nach Typ",
+      "byTypeDetailed": "Nach Typ (detailliert)",
+      "byStatus": "Nach Status",
+      "byLanguage": "Sprachen",
+      "byLanguageDetailed": "Sprachdetails",
+      "pagesWithoutTitle": "Seiten ohne Titel",
+      "pagesWithoutKeywords": "Seiten ohne Schlüsselwörter",
+      "pagesWithoutDescription": "Seiten ohne Beschreibung",
+      "contentFromAnotherSite": "Inhalt von einer anderen Seite",
+      "byOrphanContent": "Verwaister Inhalt",
+      "lockedContent": "Gesperrter Inhalt",
+      "wipContent": "In Bearbeitung",
+      "contentWaitingPublication": "Workflow-Instanzen",
+      "customCacheContent": "Benutzerdefinierter Cache-Inhalt",
+      "aclInheritanceBreak": "ACL-Vererbungsunterbrechung",
+      "byAuthorAndDate": "Nach Autor und Datum",
+      "pagesUntranslated": "Nicht übersetzter Inhalt",
+      "references": "Referenzen",
+      "markedForDeletion": "Zum Löschen markiert",
+      "liveContents": "Live-Sichtbarkeitsbedingungen",
+      "expiredContents": "Abgelaufener Inhalt",
+      "futureContents": "Geplanter Inhalt"
+    },
+    "descriptions": {
+      "overview": "Erhalten Sie einen sofortigen Überblick über die wichtigsten Kennzahlen der ausgewählten Seite.",
+      "byAuthor": "Inhalte auflisten, die von bestimmten Autoren erstellt oder geändert wurden.",
+      "byAllDate": "Inhaltsaktivität nach Monat und Typ aufschlüsseln.",
+      "references": "Der Bericht enthält nur Inhalte, die auf einer Seite verwendet werden. Nicht verwendete Inhalte aus Inhaltsordnern werden nicht angezeigt.",
+      "byAuthorAndDate": "Inhalte filtern durch Kombination von Datums- und Autorenkriterien.",
+      "wipContent": "Inhalte anzeigen, die als 'In Bearbeitung' (WIP) markiert sind. Diese Elemente werden noch bearbeitet und sind nicht zur Veröffentlichung bereit.",
+      "contentWaitingPublication": "Alle Inhalte auflisten, die eine ausstehende Workflow-Aufgabe haben. Dies umfasst Inhalte, die auf Überprüfung, Genehmigung oder Veröffentlichung warten.",
+      "markedForDeletion": "Inhalte anzeigen, die zum Löschen markiert wurden. Dieser Bericht zeigt zur Entfernung markierte Elemente zusammen mit der Anzahl der betroffenen untergeordneten Knoten.",
+      "lockedContent": "Alle derzeit von Benutzern gesperrten Inhalte anzeigen. Dieser Bericht zeigt, wer den Inhalt erstellt hat, wer ihn gesperrt hat und wo er sich befindet. Nützlich zur Identifizierung von Inhalten, die möglicherweise entsperrt werden müssen.",
+      "customCacheContent": "Inhalte mit benutzerdefinierten Cache-Ablaufeinstellungen anzeigen. Dieser Bericht identifiziert Inhalte mit spezifischer Cache-Konfiguration und zeigt die Ablaufwerte an, um die Cache-Leistung zu optimieren.",
+      "aclInheritanceBreak": "Inhalte identifizieren, bei denen die ACL-Vererbung (Zugriffssteuerungsliste) unterbrochen wurde. Dieser Bericht zeigt Knoten mit benutzerdefinierten Berechtigungen, die Berechtigungen von übergeordneten Knoten überschreiben. Nützlich für die Überprüfung von Sicherheitskonfigurationen.",
+      "pagesWithoutTitle": "Seiten identifizieren, denen Titel in einer oder mehreren Sprachen fehlen. Der Bericht zeigt den Pfad und gibt an, welche Sprachen Titel definiert haben.",
+      "pagesUntranslated": "Inhalte identifizieren, die nicht in eine bestimmte Sprache übersetzt wurden. Wählen Sie die Zielsprache aus, um Inhalte zu finden, die in anderen Sprachen vorhanden sind, aber die Übersetzung fehlt.",
+      "liveContents": "Inhalte mit Live-Sichtbarkeitsbedingungen anzeigen. Dieser Bericht zeigt Inhalte mit angewendeten bedingten Sichtbarkeitsregeln, einschließlich der Bedingungen, des Übereinstimmungsstatus und des aktuellen Sichtbarkeitsstatus.",
+      "expiredContents": "Inhalte mit abgelaufenen Sichtbarkeitsbedingungen anzeigen. Dieser Bericht identifiziert Inhalte mit Sichtbarkeitsenddaten, die bereits vergangen sind, wodurch der Inhalt auf der Live-Site nicht mehr sichtbar ist.",
+      "futureContents": "Inhalte anzeigen, die in Zukunft live gehen sollen. Dieser Bericht zeigt Inhalte mit Sichtbarkeitsstartdaten, die noch nicht erreicht wurden, sodass Sie bevorstehende Inhaltsveröffentlichungen vorher ansehen können.",
+      "pagesWithoutKeywords": "Seiten identifizieren, denen SEO-Schlüsselwörter fehlen. Dieser Bericht hilft Ihnen, Seiten zu finden, die Schlüsselwort-Metadaten für eine bessere Suchmaschinenoptimierung benötigen.",
+      "pagesWithoutDescription": "Seiten identifizieren, denen Beschreibungen in einer oder mehreren Sprachen fehlen. Der Bericht zeigt den Pfad und gibt an, welche Sprachen Beschreibungen für bessere SEO und Barrierefreiheit definiert haben."
+    },
+    "fields": {
+      "path": "Pfad",
+      "language": "Sprache",
+      "typeSearch": {
+        "label": "Suchtyp",
+        "pages": "Nur Seiten",
+        "content": "Alle Inhalte"
+      },
+      "typeAuthor": {
+        "label": "Autorenbereich",
+        "created": "Erstellt von",
+        "modified": "Zuletzt geändert von"
+      },
+      "date": "Datum",
+      "searchPath": "Suchpfad",
+      "searchByDate": "Nach Datum filtern",
+      "typeDateSearch": {
+        "label": "Zu verwendendes Datumsfeld",
+        "created": "Erstellungsdaten verwenden",
+        "modified": "Letzte Änderungsdaten verwenden"
+      },
+      "typeDateSearch.all": "Alle Daten",
+      "typeDateSearch.beforeDate": "Vor Datum",
+      "dateBegin": "Startdatum",
+      "dateEnd": "Enddatum",
+      "searchByAuthor": "Nach Autor filtern",
+      "username": "Benutzername",
+      "selectUser": "Benutzer auswählen...",
+      "typeAuthorSearch": "Autorenbedingung",
+      "originPath": "Die gefundenen Inhaltsreferenzen anzeigen in",
+      "destinationPath": "die Inhalte referenzieren von",
+      "dateRange": "Datumsbereich",
+      "authorFilters": "Autorenfilter"
+    },
+    "parameters": {
+      "advanced": "Erweiterte Parameter",
+      "keyPlaceholder": "Parametername",
+      "valuePlaceholder": "Parameterwert"
+    },
+    "actions": {
+      "runReport": "Bericht ausführen",
+      "addParameter": "Parameter hinzufügen",
+      "remove": "Entfernen",
+      "browse": "Durchsuchen"
+    },
+    "common": {
+      "loading": "Laden..."
+    },
+    "states": {
+      "loading": "Lädt…",
+      "lastUpdated": "Zuletzt aktualisiert {{value}}"
+    },
+    "result": {
+      "nbPages": "Seiten",
+      "nbTemplates": "Bereitgestellte Module",
+      "nbUsers": "Registrierte Benutzer",
+      "nbContents": "Inhaltsknoten (jnt:content)",
+      "nbEditorialContents": "Redaktionelle Inhalte (jmix:editorialContent)",
+      "nbWorkflowTasks": "Ausstehende Workflow-Aufgaben",
+      "nbFiles": "Dateien (jnt:file)",
+      "nbImages": "Bilder (jmix:image)",
+      "languages": "Verfügbare Sprachen",
+      "rawJson": "Rohes JSON",
+      "viewContent": "Anzeigen"
+    },
+    "errors": {
+      "requiredField": "Das Feld \"{{field}}\" ist erforderlich."
+    },
+    "reports": {
+      "byAuthorAndDate": {
+        "columns": {
+          "title": "Titel",
+          "path": "Pfad",
+          "type": "Typ",
+          "created": "Erstellt",
+          "modified": "Geändert",
+          "published": "Veröffentlicht",
+          "locked": "Gesperrt"
+        }
+      },
+      "references": {
+        "columns": {
+          "type": "Typ",
+          "referencedPath": "Pfad des referenzierten Inhalts",
+          "referencePath": "Pfad der Referenz",
+          "lastModified": "Letztes Änderungsdatum des referenzierten Inhalts",
+          "link": "Link zur Referenz"
+        }
+      },
+      "wipContent": {
+        "columns": {
+          "title": "Titel",
+          "type": "Typ",
+          "wipStatus": "WIP-Status",
+          "path": "Pfad",
+          "page": "Seite"
+        }
+      },
+      "contentWaitingPublication": {
+        "columns": {
+          "title": "Titel",
+          "type": "Typ",
+          "path": "Pfad",
+          "workflowStarted": "Workflow gestartet",
+          "workflowName": "Workflow-Name",
+          "workflowType": "Workflow-Typ"
+        }
+      },
+      "markedForDeletion": {
+        "columns": {
+          "title": "Titel",
+          "type": "Typ",
+          "path": "Pfad",
+          "page": "Seite",
+          "subNodesDeleted": "Anzahl der zum Löschen markierten untergeordneten Knoten",
+          "published": "Veröffentlicht"
+        }
+      },
+      "pagesUntranslated": {
+        "columns": {
+          "title": "Titel",
+          "type": "Typ",
+          "path": "Pfad",
+          "date": "Erstellt"
+        }
+      },
+      "liveContents": {
+        "columns": {
+          "name": "Name",
+          "path": "Pfad",
+          "type": "Typ",
+          "listOfConditions": "Liste der Bedingungen",
+          "isConditionMatched": "Bedingungen sollten übereinstimmen",
+          "currentStatus": "Aktueller Status"
+        }
+      },
+      "expiredContents": {
+        "columns": {
+          "name": "Name",
+          "path": "Pfad",
+          "type": "Typ",
+          "expiresOn": "Abgelaufen am"
+        }
+      },
+      "futureContents": {
+        "columns": {
+          "name": "Name",
+          "path": "Pfad",
+          "type": "Typ",
+          "liveDate": "Live-Datum"
+        }
+      },
+      "pagesWithoutKeywords": {
+        "columns": {
+          "title": "Titel",
+          "pagePath": "Seitenpfad"
+        }
+      },
+      "pagesWithoutDescription": {
+        "columns": {
+          "path": "Seitenpfad"
+        }
+      },
+      "lockedContent": {
+        "columns": {
+          "title": "Titel",
+          "type": "Typ",
+          "author": "Autor",
+          "lockedBy": "Gesperrt von",
+          "path": "Pfad"
+        }
+      },
+      "customCacheContent": {
+        "columns": {
+          "title": "Titel",
+          "type": "Typ",
+          "expiration": "Ablauf",
+          "path": "Pfad"
+        }
+      },
+      "aclInheritanceBreak": {
+        "columns": {
+          "title": "Titel",
+          "path": "Pfad"
+        }
+      }
+    }
+  }
+}
