@@ -13,6 +13,13 @@ The Content Report React module offers a modern, user-friendly interface for gen
 - **Workflow Tracking**: Pending workflow tasks count
 - **Asset Management**: Files and Images counts
 - **Language Support**: Visual display of available site languages with flag emojis
+- **Content Activity (Last 30 Days)**:
+  - New content created
+  - Modified content items
+  - Published content items
+  - Published vs Unpublished nodes comparison
+  - Average time from creation to publication
+  - Top 5 contributors ranked by content count (with medal badges 🥇🥈🥉)
 
 ### 📝 Content Reports
 - **By Author and Date**: Filter content by author, creation/modification dates
@@ -131,9 +138,32 @@ Reports are configured in `src/javascript/AdminPanel/AdminPanel.constants.js`:
 
 ### Translations
 
-Add translations in:
+The module supports 6 languages with complete translations:
 - `src/main/resources/javascript/locales/en.json` (English)
 - `src/main/resources/javascript/locales/fr.json` (French)
+- `src/main/resources/javascript/locales/de.json` (German)
+- `src/main/resources/javascript/locales/es.json` (Spanish)
+- `src/main/resources/javascript/locales/it.json` (Italian)
+- `src/main/resources/javascript/locales/pt.json` (Portuguese)
+
+**Content Activity Translation Keys** (added for all languages):
+```json
+{
+  "result": {
+    "contentActivity": "Content Activity (Last 30 Days)",
+    "newContentLast30Days": "New Content Created",
+    "modifiedContentLast30Days": "Modified Content Items",
+    "publishedContentLast30Days": "Published Content Items",
+    "unpublishedNodes": "Unpublished Nodes",
+    "publishedNodes": "Published Nodes",
+    "averageTimeToPublish": "Average Time to Publish",
+    "days": "days",
+    "topContributors": "Top Contributors",
+    "items": "items",
+    "noContributorsData": "No contributors data available for the last 30 days"
+  }
+}
+```
 
 ### Backend Reports
 
@@ -266,6 +296,17 @@ query {
         nbFiles
         nbImages
         languages
+        # Content Activity (Last 30 Days)
+        newContentLast30Days
+        modifiedContentLast30Days
+        publishedContentLast30Days
+        unpublishedNodes
+        publishedNodes
+        averageTimeToPublish
+        topContributors {
+          username
+          contentCount
+        }
       }
       rawReport(
         siteKey: "mysite"
@@ -389,13 +430,20 @@ For issues, questions, or contributions:
 - Initial release
 - 12+ pre-configured reports
 - Site overview dashboard with comprehensive metrics
-- Multi-language support (EN, FR)
+- Multi-language support (EN, FR, DE, ES, IT, PT)
 - Modern React UI with Moonstone design system
 - GraphQL API for report access
 - Customizable report framework
 - Asset tracking (files and images)
 - Workflow task monitoring
 - ACL inheritance break detection
+- **Content Activity Analytics (Last 30 Days)**:
+  - New content created tracking
+  - Modified content items monitoring
+  - Published content items tracking
+  - Published vs unpublished nodes comparison
+  - Average time from creation to publication metric
+  - Top 5 contributors with ranking (medal badges)
 
 ## Roadmap
 
