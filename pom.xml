@@ -38,6 +38,12 @@
     <packaging>bundle</packaging>
     <description>This is the custom ReactJS module (Content Report) for running on a Jahia server.</description>
 
+    <scm>
+        <connection>scm:git:git@github.com:smonier/contentReportReact.git</connection>
+        <developerConnection>scm:git:git@github.com:smonier/contentReportReact.git</developerConnection>
+        <url>https://github.com/smonier/contentReportReact</url>
+    </scm>
+
     <properties>
         <yarn.arguments>build:production</yarn.arguments>
     </properties>
