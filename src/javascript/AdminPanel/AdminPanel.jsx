@@ -262,6 +262,99 @@ const OverviewResult = ({data, labelKey, descriptionKey, t}) => {
                         </div>
                     )}
                 </div>
+
+                {/* Content Activity Section */}
+                <div style={{marginTop: '32px', paddingTop: '24px', borderTop: '2px solid #e8ecf0'}}>
+                    <Typography variant="heading" weight="bold" style={{fontSize: '18px', color: '#1a2332', marginBottom: '16px'}}>
+                        {t('result.contentActivity')}
+                    </Typography>
+
+                    {/* Activity Metrics Grid */}
+                    <div style={overviewStyles.grid}>
+                        <div style={overviewStyles.card}>
+                            <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500'}}>{t('result.newContentLast30Days')}</div>
+                            <div style={{...overviewStyles.value, color: '#22863a'}}>{data.newContentLast30Days}</div>
+                        </div>
+                        <div style={overviewStyles.card}>
+                            <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500'}}>{t('result.modifiedContentLast30Days')}</div>
+                            <div style={{...overviewStyles.value, color: '#0366d6'}}>{data.modifiedContentLast30Days}</div>
+                        </div>
+                        <div style={overviewStyles.card}>
+                            <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500'}}>{t('result.publishedContentLast30Days')}</div>
+                            <div style={{...overviewStyles.value, color: '#6f42c1'}}>{data.publishedContentLast30Days}</div>
+                        </div>
+                        <div style={overviewStyles.card}>
+                            <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500'}}>{t('result.publishedNodes')}</div>
+                            <div style={overviewStyles.value}>{data.publishedNodes}</div>
+                        </div>
+                        <div style={overviewStyles.card}>
+                            <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500'}}>{t('result.unpublishedNodes')}</div>
+                            <div style={overviewStyles.value}>{data.unpublishedNodes}</div>
+                        </div>
+                        <div style={overviewStyles.card}>
+                            <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500'}}>{t('result.averageTimeToPublish')}</div>
+                            <div style={overviewStyles.value}>{data.averageTimeToPublish?.toFixed(1)} {t('result.days')}</div>
+                        </div>
+                    </div>
+
+                    {/* Top Contributors */}
+                    <div style={{...overviewStyles.card, marginTop: '16px'}}>
+                        <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500', marginBottom: '12px'}}>
+                            {t('result.topContributors')}
+                        </div>
+                        {data.topContributors && data.topContributors.length > 0 ? (
+                            <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
+                                {data.topContributors.map((contributor, index) => (
+                                    <div
+                                        key={contributor.username}
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center',
+                                            padding: '8px 12px',
+                                            backgroundColor: '#f4f6f9',
+                                            borderRadius: '4px'
+                                        }}
+                                    >
+                                        <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                                            <span style={{
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                width: '24px',
+                                                height: '24px',
+                                                borderRadius: '50%',
+                                                backgroundColor: index === 0 ? '#ffd700' : index === 1 ? '#c0c0c0' : index === 2 ? '#cd7f32' : '#e8ecf0',
+                                                fontSize: '12px',
+                                                fontWeight: 'bold',
+                                                color: index < 3 ? '#fff' : '#5c6f90'
+                                            }}
+                                            >
+                                                {index + 1}
+                                            </span>
+                                            <span style={{fontWeight: '500', color: '#2c3e5d'}}>{contributor.username}</span>
+                                        </div>
+                                        <span style={{
+                                            fontSize: '14px',
+                                            fontWeight: '600',
+                                            color: '#0c2f6b',
+                                            backgroundColor: '#e1e7f5',
+                                            padding: '4px 8px',
+                                            borderRadius: '4px'
+                                        }}
+                                        >
+                                            {contributor.contentCount} {t('result.items')}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div style={{color: '#8b9bb3', fontSize: '13px', fontStyle: 'italic', padding: '12px'}}>
+                                {t('result.noContributorsData')}
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
         </Paper>
     );
@@ -280,7 +373,17 @@ OverviewResult.propTypes = {
         languages: PropTypes.arrayOf(PropTypes.string),
         nbLanguages: PropTypes.number,
         siteDisplayableName: PropTypes.string,
-        siteName: PropTypes.string
+        siteName: PropTypes.string,
+        newContentLast30Days: PropTypes.number,
+        modifiedContentLast30Days: PropTypes.number,
+        publishedContentLast30Days: PropTypes.number,
+        unpublishedNodes: PropTypes.number,
+        publishedNodes: PropTypes.number,
+        averageTimeToPublish: PropTypes.number,
+        topContributors: PropTypes.arrayOf(PropTypes.shape({
+            username: PropTypes.string,
+            contentCount: PropTypes.number
+        }))
     }),
     labelKey: PropTypes.string.isRequired,
     descriptionKey: PropTypes.string,

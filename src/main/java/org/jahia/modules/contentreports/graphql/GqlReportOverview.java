@@ -95,4 +95,84 @@ public class GqlReportOverview {
     public int getNbLanguages() {
         return payload.optInt("nbLanguages");
     }
+
+    // Content Activity metrics
+    
+    @GraphQLField
+    @GraphQLDescription("Number of new content items created in the last 30 days")
+    public int getNewContentLast30Days() {
+        return payload.optInt("newContentLast30Days");
+    }
+
+    @GraphQLField
+    @GraphQLDescription("Number of content items modified in the last 30 days")
+    public int getModifiedContentLast30Days() {
+        return payload.optInt("modifiedContentLast30Days");
+    }
+
+    @GraphQLField
+    @GraphQLDescription("Number of content items published in the last 30 days")
+    public int getPublishedContentLast30Days() {
+        return payload.optInt("publishedContentLast30Days");
+    }
+
+    @GraphQLField
+    @GraphQLDescription("Number of unpublished editorial content nodes")
+    public int getUnpublishedNodes() {
+        return payload.optInt("unpublishedNodes");
+    }
+
+    @GraphQLField
+    @GraphQLDescription("Number of published editorial content nodes")
+    public int getPublishedNodes() {
+        return payload.optInt("publishedNodes");
+    }
+
+    @GraphQLField
+    @GraphQLDescription("Average time in days from content creation to publication")
+    public double getAverageTimeToPublish() {
+        return payload.optDouble("averageTimeToPublish", 0.0);
+    }
+
+    @GraphQLField
+    @GraphQLDescription("Top 5 contributors by content count")
+    public List<GqlContributor> getTopContributors() {
+        JSONArray contributorsArray = payload.optJSONArray("topContributors");
+        List<GqlContributor> contributors = new ArrayList<>();
+        if (contributorsArray != null) {
+            for (int i = 0; i < contributorsArray.length(); i++) {
+                JSONObject contributorObj = contributorsArray.optJSONObject(i);
+                if (contributorObj != null) {
+                    contributors.add(new GqlContributor(
+                        contributorObj.optString("username"),
+                        contributorObj.optInt("contentCount")
+                    ));
+                }
+            }
+        }
+        return contributors;
+    }
+
+    // Inner class for contributor data
+    public static class GqlContributor {
+        private final String username;
+        private final int contentCount;
+
+        public GqlContributor(String username, int contentCount) {
+            this.username = username;
+            this.contentCount = contentCount;
+        }
+
+        @GraphQLField
+        @GraphQLDescription("Username of the contributor")
+        public String getUsername() {
+            return username;
+        }
+
+        @GraphQLField
+        @GraphQLDescription("Number of content items created by this contributor")
+        public int getContentCount() {
+            return contentCount;
+        }
+    }
 }

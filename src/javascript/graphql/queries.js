@@ -15,6 +15,16 @@ export const OVERVIEW_QUERY = `
                     nbImages
                     languages
                     nbLanguages
+                    newContentLast30Days
+                    modifiedContentLast30Days
+                    publishedContentLast30Days
+                    unpublishedNodes
+                    publishedNodes
+                    averageTimeToPublish
+                    topContributors {
+                        username
+                        contentCount
+                    }
                 }
             }
         }

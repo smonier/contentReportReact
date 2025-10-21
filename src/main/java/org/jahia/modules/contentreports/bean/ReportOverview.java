@@ -81,6 +81,15 @@ public class ReportOverview extends BaseReport {
     private Integer filesNumber;
     private Integer imagesNumber;
     private List<String> languages;
+    
+    // Content Activity metrics (last 30 days)
+    private Integer newContentLast30Days;
+    private Integer modifiedContentLast30Days;
+    private Integer publishedContentLast30Days;
+    private Integer unpublishedNodes;
+    private Integer publishedNodes;
+    private Double averageTimeToPublish; // in days
+    private List<Map<String, Object>> topContributors;
 
 
     /**
@@ -100,6 +109,15 @@ public class ReportOverview extends BaseReport {
         this.filesNumber = 0;
         this.imagesNumber = 0;
         this.languages = new ArrayList<>();
+        
+        // Initialize activity metrics
+        this.newContentLast30Days = 0;
+        this.modifiedContentLast30Days = 0;
+        this.publishedContentLast30Days = 0;
+        this.unpublishedNodes = 0;
+        this.publishedNodes = 0;
+        this.averageTimeToPublish = 0.0;
+        this.topContributors = new ArrayList<>();
     }
 
     @Override
@@ -150,6 +168,122 @@ public class ReportOverview extends BaseReport {
             this.languages = new ArrayList<>(languageSet);
             Collections.sort(this.languages);
         }
+        
+        // Calculate Content Activity metrics (last 30 days)
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -30);
+        String thirtyDaysAgo = dateFormat.format(cal.getTime());
+        
+        /* getting new content in last 30 days */
+        String newContentQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jmix:editorialContent] AS item " +
+                "WHERE ISDESCENDANTNODE(item,['" + siteNode.getPath() + "']) " +
+                "AND [jcr:created] >= CAST('" + thirtyDaysAgo + "T00:00:00.000Z' AS DATE)";
+        QueryWrapper newContentQuery = session.getWorkspace().getQueryManager().createQuery(newContentQueryStr, Query.JCR_SQL2);
+        this.newContentLast30Days = (int) newContentQuery.execute().getRows().nextRow().getValue("count").getLong();
+        
+        /* getting modified content in last 30 days */
+        String modifiedContentQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jmix:editorialContent] AS item " +
+                "WHERE ISDESCENDANTNODE(item,['" + siteNode.getPath() + "']) " +
+                "AND [jcr:lastModified] >= CAST('" + thirtyDaysAgo + "T00:00:00.000Z' AS DATE)";
+        QueryWrapper modifiedContentQuery = session.getWorkspace().getQueryManager().createQuery(modifiedContentQueryStr, Query.JCR_SQL2);
+        this.modifiedContentLast30Days = (int) modifiedContentQuery.execute().getRows().nextRow().getValue("count").getLong();
+        
+        /* getting published content in last 30 days (nodes with j:lastPublished in last 30 days) */
+        String publishedContentQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jmix:lastPublished] AS item " +
+                "WHERE ISDESCENDANTNODE(item,['" + siteNode.getPath() + "']) " +
+                "AND [j:lastPublished] >= CAST('" + thirtyDaysAgo + "T00:00:00.000Z' AS DATE)";
+        QueryWrapper publishedContentQuery = session.getWorkspace().getQueryManager().createQuery(publishedContentQueryStr, Query.JCR_SQL2);
+        this.publishedContentLast30Days = (int) publishedContentQuery.execute().getRows().nextRow().getValue("count").getLong();
+        
+        /* getting unpublished vs published nodes count */
+        String publishedNodesQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jmix:editorialContent] AS item " +
+                "WHERE ISDESCENDANTNODE(item,['" + siteNode.getPath() + "']) " +
+                "AND [j:published] = true";
+        QueryWrapper publishedNodesQuery = session.getWorkspace().getQueryManager().createQuery(publishedNodesQueryStr, Query.JCR_SQL2);
+        this.publishedNodes = (int) publishedNodesQuery.execute().getRows().nextRow().getValue("count").getLong();
+        
+        // Unpublished = total editorial content - published
+        this.unpublishedNodes = this.editorialContentsNumber - this.publishedNodes;
+        
+        /* Calculate average time from creation to publication */
+        try {
+            String avgTimeQueryStr = "SELECT item.[jcr:created] AS created, item.[j:lastPublished] AS published " +
+                    "FROM [jmix:lastPublished] AS item " +
+                    "WHERE ISDESCENDANTNODE(item,['" + siteNode.getPath() + "']) " +
+                    "AND item.[j:lastPublished] is not null " +
+                    "AND item.[jcr:created] is not null";
+            QueryWrapper avgTimeQuery = session.getWorkspace().getQueryManager().createQuery(avgTimeQueryStr, Query.JCR_SQL2);
+            javax.jcr.query.RowIterator rows = avgTimeQuery.execute().getRows();
+            
+            long totalDiff = 0;
+            int count = 0;
+            while (rows.hasNext()) {
+                javax.jcr.query.Row row = rows.nextRow();
+                try {
+                    Calendar created = row.getValue("created").getDate();
+                    Calendar published = row.getValue("published").getDate();
+                    long diffInMillis = published.getTimeInMillis() - created.getTimeInMillis();
+                    long diffInDays = diffInMillis / (1000 * 60 * 60 * 24);
+                    if (diffInDays >= 0) { // Only positive differences
+                        totalDiff += diffInDays;
+                        count++;
+                    }
+                } catch (Exception e) {
+                    // Skip rows with invalid dates
+                }
+            }
+            
+            if (count > 0) {
+                this.averageTimeToPublish = (double) totalDiff / count;
+            }
+        } catch (Exception e) {
+            logger.warn("Error calculating average time to publish", e);
+            this.averageTimeToPublish = 0.0;
+        }
+        
+        /* Getting top contributors (authors/editors) */
+        try {
+            // Query all editorial content and aggregate by author manually
+            String topContributorsQueryStr = "SELECT item.[jcr:createdBy] AS author " +
+                    "FROM [jmix:editorialContent] AS item " +
+                    "WHERE ISDESCENDANTNODE(item,['" + siteNode.getPath() + "'])";
+            QueryWrapper topContributorsQuery = session.getWorkspace().getQueryManager().createQuery(topContributorsQueryStr, Query.JCR_SQL2);
+            javax.jcr.query.RowIterator rows = topContributorsQuery.execute().getRows();
+            
+            // Collect contributors with their counts manually
+            Map<String, Integer> contributorMap = new HashMap<>();
+            while (rows.hasNext()) {
+                javax.jcr.query.Row row = rows.nextRow();
+                try {
+                    String author = row.getValue("author").getString();
+                    if (author != null && !author.isEmpty()) {
+                        contributorMap.put(author, contributorMap.getOrDefault(author, 0) + 1);
+                    }
+                } catch (Exception e) {
+                    // Skip invalid rows
+                    logger.debug("Skipping row without valid author", e);
+                }
+            }
+            
+            // Sort by count (descending) and get top 5
+            List<Map.Entry<String, Integer>> sortedContributors = new ArrayList<>(contributorMap.entrySet());
+            sortedContributors.sort((e1, e2) -> e2.getValue().compareTo(e1.getValue()));
+            
+            this.topContributors = new ArrayList<>();
+            int topLimit = Math.min(5, sortedContributors.size());
+            for (int i = 0; i < topLimit; i++) {
+                Map.Entry<String, Integer> entry = sortedContributors.get(i);
+                Map<String, Object> contributor = new HashMap<>();
+                contributor.put("username", entry.getKey());
+                contributor.put("contentCount", entry.getValue());
+                this.topContributors.add(contributor);
+            }
+            
+            logger.info("Found {} top contributors from {} total authors", topLimit, contributorMap.size());
+        } catch (Exception e) {
+            logger.error("Error calculating top contributors", e);
+            this.topContributors = new ArrayList<>();
+        }
     }
 
     /**
@@ -173,6 +307,16 @@ public class ReportOverview extends BaseReport {
         jsonObject.put("nbImages", imagesNumber);
         jsonObject.put("languages", languages);
         jsonObject.put("nbLanguages", languages.size());
+        
+        // Content Activity metrics
+        jsonObject.put("newContentLast30Days", newContentLast30Days);
+        jsonObject.put("modifiedContentLast30Days", modifiedContentLast30Days);
+        jsonObject.put("publishedContentLast30Days", publishedContentLast30Days);
+        jsonObject.put("unpublishedNodes", unpublishedNodes);
+        jsonObject.put("publishedNodes", publishedNodes);
+        jsonObject.put("averageTimeToPublish", averageTimeToPublish);
+        jsonObject.put("topContributors", topContributors);
+        
         return jsonObject;
     }
 
