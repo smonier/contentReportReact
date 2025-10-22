@@ -306,6 +306,17 @@
   font-size: 14px;
 }
 
+.dropdownInput {
+  width: 100%;
+}
+
+.radioGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
 .browseButton {
   padding: 8px 18px;
   border-radius: 4px;

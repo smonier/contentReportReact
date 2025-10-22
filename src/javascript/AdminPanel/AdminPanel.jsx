@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import PropTypes from 'prop-types';
-import {Header, LayoutContent, Paper, Typography, Button, Input} from '@jahia/moonstone';
+import {Header, LayoutContent, Paper, Typography, Button, Input, Dropdown, CheckboxItem, RadioGroup, RadioItem} from '@jahia/moonstone';
 import {useTranslation} from 'react-i18next';
 import axios from 'axios';
 import {buildReportsConfig} from './AdminPanel.constants';
@@ -698,27 +698,30 @@ const AdminPanel = ({initialReportId}) => {
     const getSelectOptions = useCallback(field => {
         if (field.type === 'languageSelect') {
             return {
-                options: siteLanguages.map(lang => ({value: lang, labelKey: lang})),
-                isLoading: false,
-                renderOption: option => option.value
+                data: siteLanguages.map(lang => ({
+                    label: lang,
+                    value: lang
+                })),
+                isLoading: false
             };
         }
 
         if (field.type === 'userSelect') {
             return {
-                options: users.map(user => ({
+                data: users.map(user => ({
                     value: user.username,
                     label: `${user.username}${user.email ? ` (${user.email})` : ''}`
                 })),
-                isLoading: loadingUsers,
-                renderOption: option => option.label
+                isLoading: loadingUsers
             };
         }
 
         return {
-            options: field.options || [],
-            isLoading: false,
-            renderOption: option => t(option.labelKey)
+            data: (field.options || []).map(option => ({
+                value: option.value,
+                label: t(option.labelKey)
+            })),
+            isLoading: false
         };
     }, [siteLanguages, users, loadingUsers, t]);
 
@@ -729,14 +732,15 @@ const AdminPanel = ({initialReportId}) => {
 
         if (field.type === 'checkbox') {
             return (
-                <label key={field.name} className={styles.checkboxRow}>
-                    <input
-                        type="checkbox"
+                <div key={field.name} className={styles.checkboxRow}>
+                    <CheckboxItem
+                        id={field.name}
+                        value={field.name}
+                        label={t(field.labelKey)}
                         checked={Boolean(fields[field.name])}
-                        onChange={event => handleFieldChange(field.name, event.target.checked)}
+                        onChange={(event, value, checked) => handleFieldChange(field.name, checked)}
                     />
-                    <span>{t(field.labelKey)}</span>
-                </label>
+                </div>
             );
         }
 
@@ -744,45 +748,44 @@ const AdminPanel = ({initialReportId}) => {
             return (
                 <div key={field.name} className={styles.formRow}>
                     <span className={styles.label}>{t(field.labelKey)}</span>
-                    {(field.options || []).map(option => (
-                        <label key={`${field.name}-${option.value}`} className={styles.inline}>
-                            <input
-                                type="radio"
-                                name={field.name}
+                    <RadioGroup
+                        name={field.name}
+                        className={styles.radioGroup}
+                    >
+                        {(field.options || []).map(option => (
+                            <RadioItem
+                                key={`${field.name}-${option.value}`}
+                                id={`${field.name}-${option.value}`}
                                 value={option.value}
+                                label={t(option.labelKey)}
                                 checked={fields[field.name] === option.value}
                                 onChange={event => handleFieldChange(field.name, event.target.value)}
                             />
-                            <span>{t(option.labelKey)}</span>
-                        </label>
-                    ))}
+                        ))}
+                    </RadioGroup>
                 </div>
             );
         }
 
         if (field.type === 'select' || field.type === 'languageSelect' || field.type === 'userSelect') {
-            const {options, isLoading, renderOption} = getSelectOptions(field);
-            const placeholder = field.placeholderKey ? t(field.placeholderKey) : '';
+            const {data, isLoading} = getSelectOptions(field);
+            const placeholder = field.placeholderKey ? t(field.placeholderKey) : (t('common.selectOption') || 'Select...');
 
             return (
                 <div key={field.name} className={styles.formRow}>
                     <label className={styles.label} htmlFor={field.name}>{t(field.labelKey)}</label>
-                    <select
+                    <Dropdown
                         id={field.name}
+                        data={data}
                         value={fields[field.name] ?? ''}
-                        disabled={isLoading}
-                        className={styles.input}
-                        onChange={event => handleFieldChange(field.name, event.target.value)}
-                    >
-                        <option value="">
-                            {isLoading ? t('common.loading') || 'Loading...' : placeholder || t('common.selectOption') || 'Select...'}
-                        </option>
-                        {options.map(option => (
-                            <option key={option.value} value={option.value}>
-                                {renderOption(option)}
-                            </option>
-                        ))}
-                    </select>
+                        isDisabled={isLoading}
+                        isLoading={isLoading}
+                        placeholder={isLoading ? (t('common.loading') || 'Loading...') : placeholder}
+                        variant="outlined"
+                        size="medium"
+                        className={styles.dropdownInput}
+                        onChange={(event, item) => handleFieldChange(field.name, item.value)}
+                    />
                 </div>
             );
         }
