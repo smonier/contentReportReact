@@ -63,7 +63,7 @@ import java.util.*;
  */
 public class ReportOrphanContent extends QueryReport {
     private static Logger logger = LoggerFactory.getLogger(ReportOrphanContent.class);
-    protected static final String BUNDLE = "resources.content-reports";
+    protected static final String BUNDLE = "resources.contentReportReact";
 
     private Map<String, JCRNodeWrapper> userMap;
 

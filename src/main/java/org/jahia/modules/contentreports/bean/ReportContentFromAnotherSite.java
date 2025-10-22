@@ -67,7 +67,7 @@ import java.util.*;
 public class ReportContentFromAnotherSite extends QueryReport {
 
     private static Logger logger = LoggerFactory.getLogger(ReportContentFromAnotherSite.class);
-    protected static final String BUNDLE = "resources.content-reports";
+    protected static final String BUNDLE = "resources.contentReportReact";
 
     /**
      * Instantiates a new Report pages without title.

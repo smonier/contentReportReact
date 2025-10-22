@@ -56,7 +56,7 @@ import java.util.HashMap;
  */
 public class ReportPagesWithoutDescription extends I18NPropertyReport {
     private static Logger logger = LoggerFactory.getLogger(ReportPagesWithoutDescription.class);
-    protected static final String BUNDLE = "resources.content-reports";
+    protected static final String BUNDLE = "resources.contentReportReact";
 
     /**
      * Instantiates a new Report pages without title.

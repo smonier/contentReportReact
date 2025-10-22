@@ -68,7 +68,7 @@ import java.util.Map;
  */
 public class ReportByUnstranslated extends QueryReport {
 
-    private static final String BUNDLE = "resources.content-reports";
+    private static final String BUNDLE = "resources.contentReportReact";
     private Map<Integer, Map<Integer, Map<String, Integer>>> dataMap;
     private Map<String, Map<String, Object>> pageMap;
     private Boolean useSystemUser;

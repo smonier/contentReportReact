@@ -63,7 +63,7 @@ import java.util.*;
  */
 public class ReportByAllDate extends QueryReport {
 
-    private static final String BUNDLE = "resources.content-reports";
+    private static final String BUNDLE = "resources.contentReportReact";
     private Map<Integer, Map<Integer, Map<String, Integer>>> dataMap;
     private Boolean useSystemUser;
     private SearchActionType actionType;

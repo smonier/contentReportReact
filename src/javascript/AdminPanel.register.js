@@ -25,7 +25,7 @@ const registerResources = () => {
             i18next.addResourceBundle(lang, 'contentReportReact', namespaceData, true, true);
         }
 
-        // Register 'content-reports' namespace for jContent navigation labels
+        // Register 'contentReportReact' namespace for jContent navigation labels
         const contentReportsData = resource.contentReportReact;
         if (contentReportsData && !i18next.hasResourceBundle(lang, 'contentReportReact')) {
             i18next.addResourceBundle(lang, 'contentReportReact', contentReportsData, true, true);

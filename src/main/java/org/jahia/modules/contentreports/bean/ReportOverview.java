@@ -68,7 +68,7 @@ import java.util.*;
  */
 public class ReportOverview extends BaseReport {
     private static Logger logger = LoggerFactory.getLogger(ReportOverview.class);
-    protected static final String BUNDLE = "resources.content-reports";
+    protected static final String BUNDLE = "resources.contentReportReact";
 
     protected DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 

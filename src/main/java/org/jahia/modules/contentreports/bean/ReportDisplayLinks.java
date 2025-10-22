@@ -61,7 +61,7 @@ import javax.jcr.nodetype.PropertyDefinition;
  * @author tdubreucq
  */
 public class ReportDisplayLinks extends BaseReport {
-    protected static final String BUNDLE = "resources.content-reports";
+    protected static final String BUNDLE = "resources.contentReportReact";
     private String originPath;
     private String destinationPath;
     private JSONArray dataList = new JSONArray();

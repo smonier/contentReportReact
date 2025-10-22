@@ -68,7 +68,7 @@ import java.util.*;
  */
 public class I18NPropertyReport extends BaseReport {
     private static Logger logger = LoggerFactory.getLogger(I18NPropertyReport.class);
-    protected static final String BUNDLE = "resources.content-reports";
+    protected static final String BUNDLE = "resources.contentReportReact";
 
     protected Map<String, Map<String, Object>> dataMap;
     private String language;

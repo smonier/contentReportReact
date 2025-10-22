@@ -73,7 +73,7 @@ public class ReportByStatus extends BaseReport {
     private final String PROPERTY_ITEMS = "items";
     private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private Map<String, Map<String, Object>> dataMap;
-    private static final String BUNDLE = "resources.content-reports";
+    private static final String BUNDLE = "resources.contentReportReact";
 
     /**
      * The class constructor.

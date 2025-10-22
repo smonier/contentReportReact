@@ -63,7 +63,7 @@ import java.util.Map;
  */
 public class ReportPagesWithoutKeyword extends QueryReport {
     private static Logger logger = LoggerFactory.getLogger(ReportPagesWithoutKeyword.class);
-    private static final String BUNDLE = "resources.content-reports";
+    private static final String BUNDLE = "resources.contentReportReact";
     private long totalContent;
     private String sortOrder;
     private int sortCol;

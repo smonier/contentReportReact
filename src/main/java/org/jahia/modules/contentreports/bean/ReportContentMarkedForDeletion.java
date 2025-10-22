@@ -69,7 +69,7 @@ import java.util.stream.Stream;
  */
 public class ReportContentMarkedForDeletion extends QueryReport {
     private static Logger logger = LoggerFactory.getLogger(ReportLockedContent.class);
-    protected static final String BUNDLE = "resources.content-reports";
+    protected static final String BUNDLE = "resources.contentReportReact";
     private long totalContent;
     private int sortCol;
     private String searchPath;

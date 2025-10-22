@@ -65,7 +65,7 @@ import java.util.Map;
  */
 public class ReportWipContent extends QueryReport {
     private static Logger logger = LoggerFactory.getLogger(ReportWipContent.class);
-    protected static final String BUNDLE = "resources.content-reports";
+    protected static final String BUNDLE = "resources.contentReportReact";
     private long totalContent;
     private int sortCol;
     private String searchPath;

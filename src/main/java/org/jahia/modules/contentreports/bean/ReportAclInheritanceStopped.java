@@ -69,7 +69,7 @@ import java.util.*;
  */
 public class ReportAclInheritanceStopped extends QueryReport {
     private static Logger logger = LoggerFactory.getLogger(ReportAclInheritanceStopped.class);
-    protected static final String BUNDLE = "resources.content-reports";
+    protected static final String BUNDLE = "resources.contentReportReact";
     private long totalContent;
 
     /**
