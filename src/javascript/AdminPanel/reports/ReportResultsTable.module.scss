@@ -101,6 +101,21 @@
 .pathLink {
     color: var(--color-primary, #007bff);
     text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.linkWithIcon {
+    color: var(--color-primary, #007bff);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
     
     &:hover {
         text-decoration: underline;

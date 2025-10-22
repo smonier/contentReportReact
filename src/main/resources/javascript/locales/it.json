@@ -104,7 +104,8 @@
       "browse": "Sfoglia"
     },
     "common": {
-      "loading": "Caricamento..."
+      "loading": "Caricamento...",
+      "report": "Rapporto"
     },
     "states": {
       "loading": "Caricamento…",

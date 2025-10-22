@@ -104,7 +104,8 @@
       "browse": "Examinar"
     },
     "common": {
-      "loading": "Cargando..."
+      "loading": "Cargando...",
+      "report": "Informe"
     },
     "states": {
       "loading": "Cargando…",

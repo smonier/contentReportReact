@@ -40,41 +40,14 @@ const reports = [
         labelKey: 'menu.byAuthorAndDate',
         descriptionKey: 'descriptions.byAuthorAndDate',
         type: 'legacy',
-        component: 'ByAuthorAndDate',
         category: 'content',
         fields: [
+            // UI-only fields (not sent to backend, defaults hardcoded in Java)
+            {name: 'typeSearch', type: 'radio', labelKey: 'fields.typeSearch.label', options: typeSearchOptions, defaultValue: 'pages', uiOnly: true},
             // Position 1: Path (required, always sent)
             {name: 'pathTxt', type: 'path', labelKey: 'fields.path', defaultValue: PATH_DEFAULT, required: true, includeIfEmpty: true},
             // Position 2: Author search checkbox
             {name: 'searchAuthor', type: 'checkbox', labelKey: 'fields.searchByAuthor', defaultValue: false, includeIfEmpty: true},
-            // Position 3: Username to filter (only when searchAuthor=true)
-            {
-                name: 'searchUsername',
-                type: 'text',
-                labelKey: 'fields.username',
-                placeholderKey: 'fields.username',
-                dependsOn: 'searchAuthor',
-                dependsValue: true,
-                includeIfEmpty: true
-            },
-            // Position 4: Date search checkbox
-            {name: 'searchByDate', type: 'checkbox', labelKey: 'fields.searchByDate', defaultValue: true, includeIfEmpty: true},
-            // Position 5: Date begin (only when searchByDate=true)
-            {name: 'dateBegin', type: 'date', labelKey: 'fields.dateBegin', dependsOn: 'searchByDate', dependsValue: true, includeIfEmpty: true},
-            // Position 6: Date end (only when searchByDate=true) - CRITICAL: Must be within first 6, will need GraphQL extension
-            {name: 'dateEnd', type: 'date', labelKey: 'fields.dateEnd', dependsOn: 'searchByDate', dependsValue: true, includeIfEmpty: true},
-            // UI-only fields (not sent to backend, defaults hardcoded in Java)
-            {name: 'typeSearch', type: 'radio', labelKey: 'fields.typeSearch.label', options: typeSearchOptions, defaultValue: 'pages', uiOnly: true},
-            {
-                name: 'typeDateSearch',
-                type: 'radio',
-                labelKey: 'fields.typeDateSearch.label',
-                options: typeDateOptions,
-                defaultValue: 'created',
-                dependsOn: 'searchByDate',
-                dependsValue: true,
-                uiOnly: true
-            },
             {
                 name: 'typeAuthorSearch',
                 type: 'radio',
@@ -85,7 +58,32 @@ const reports = [
                 dependsValue: true,
                 uiOnly: true
             },
-            {name: 'typeAuthor', type: 'radio', labelKey: 'fields.typeAuthor.label', options: typeAuthorOptions, defaultValue: 'created', uiOnly: true}
+            // Position 3: Username to filter (only when searchAuthor=true)
+            {
+                name: 'searchUsername',
+                type: 'userSelect',
+                labelKey: 'fields.username',
+                placeholderKey: 'fields.selectUser',
+                dependsOn: 'searchAuthor',
+                dependsValue: true,
+                includeIfEmpty: true
+            },
+            // Position 4: Date search checkbox
+            {name: 'searchByDate', type: 'checkbox', labelKey: 'fields.searchByDate', defaultValue: false, includeIfEmpty: true},
+            {
+                name: 'typeDateSearch',
+                type: 'radio',
+                labelKey: 'fields.typeDateSearch.label',
+                options: typeDateOptions,
+                defaultValue: 'created',
+                dependsOn: 'searchByDate',
+                dependsValue: true,
+                uiOnly: true
+            },
+            // Position 5: Date begin (only when searchByDate=true)
+            {name: 'dateBegin', type: 'date', labelKey: 'fields.dateBegin', dependsOn: 'searchByDate', dependsValue: true, includeIfEmpty: true},
+            // Position 6: Date end (only when searchByDate=true) - CRITICAL: Must be within first 6, will need GraphQL extension
+            {name: 'dateEnd', type: 'date', labelKey: 'fields.dateEnd', dependsOn: 'searchByDate', dependsValue: true, includeIfEmpty: true}
         ],
         columns: [
             {key: 'title', labelKey: 'reports.byAuthorAndDate.columns.title', sortable: true},

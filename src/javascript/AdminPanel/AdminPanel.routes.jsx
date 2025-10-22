@@ -2,12 +2,11 @@ import {registry} from '@jahia/ui-extender';
 import {DEFAULT_ROUTE} from './AdminPanel.constants';
 import AdminPanel from './AdminPanel';
 import React, {Suspense} from 'react';
-import DefaultEntry from '@jahia/moonstone/dist/icons/components/DefaultEntry';
 
 export const registerRoutes = () => {
     registry.add('adminRoute', 'contentReportReact', {
         targets: ['jcontent:1'],
-        icon: <DefaultEntry/>,
+        icon: window.jahia.moonstone.toIconComponent('Pie'),
         label: 'contentReportReact:label',
         path: `${DEFAULT_ROUTE}*`, // Catch everything and let the app handle routing logic
         defaultPath: DEFAULT_ROUTE,

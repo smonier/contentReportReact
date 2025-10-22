@@ -104,7 +104,8 @@
       "browse": "Navegar"
     },
     "common": {
-      "loading": "Carregando..."
+      "loading": "Carregando...",
+      "report": "Relatório"
     },
     "states": {
       "loading": "Carregando…",

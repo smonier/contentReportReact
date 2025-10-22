@@ -1,43 +1,12 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import PropTypes from 'prop-types';
-import {Header, LayoutContent, Accordion, AccordionItem, Paper, Typography, Button, Input} from '@jahia/moonstone';
+import {Header, LayoutContent, Paper, Typography, Button, Input} from '@jahia/moonstone';
 import {useTranslation} from 'react-i18next';
 import axios from 'axios';
-import {buildReportsConfig, reportCategories} from './AdminPanel.constants';
-import ByAuthorAndDate from './reports/ByAuthorAndDate';
+import {buildReportsConfig} from './AdminPanel.constants';
 import ReportResultsTable from './reports/ReportResultsTable';
 import styles from './AdminPanel.module.scss';
-import {OVERVIEW_QUERY, RAW_REPORT_QUERY, GET_SITE_LANGUAGES_QUERY} from '../graphql/queries';
-
-const REPORT_COMPONENTS = {
-    ByAuthorAndDate
-};
-
-const resolveReportComponent = componentName => {
-    if (!componentName) {
-        return null;
-    }
-
-    // Direct mapping approach - try exact match first
-    if (componentName === 'ByAuthorAndDate') {
-        return ByAuthorAndDate;
-    }
-
-    // Fallback to dynamic lookup
-    const normalizedName = typeof componentName === 'string' ? componentName.trim() : String(componentName);
-    const componentEntry = REPORT_COMPONENTS[normalizedName];
-
-    if (!componentEntry) {
-        return null;
-    }
-
-    // Handle ES modules with default export
-    if (typeof componentEntry === 'object' && componentEntry !== null && 'default' in componentEntry) {
-        return componentEntry.default;
-    }
-
-    return componentEntry;
-};
+import {OVERVIEW_QUERY, RAW_REPORT_QUERY, GET_SITE_LANGUAGES_QUERY, GET_ALL_USERS_QUERY} from '../graphql/queries';
 
 const overviewStyles = {
     grid: {display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginTop: '16px'},
@@ -169,12 +138,8 @@ const tryParseJSON = value => {
     return value;
 };
 
-const OverviewResult = ({data, labelKey, descriptionKey, t}) => {
-    if (!data) {
-        return null;
-    }
-
-    const metrics = [
+const OverviewResult = ({data, labelKey, descriptionKey, isLoading, lastUpdated, t}) => {
+    const metrics = data ? [
         {label: t('result.nbPages'), value: data.nbPages},
         {label: t('result.nbTemplates'), value: data.nbTemplates},
         {label: t('result.nbUsers'), value: data.nbUsers},
@@ -183,7 +148,7 @@ const OverviewResult = ({data, labelKey, descriptionKey, t}) => {
         {label: t('result.nbWorkflowTasks'), value: data.nbWorkflowTasks},
         {label: t('result.nbFiles'), value: data.nbFiles},
         {label: t('result.nbImages'), value: data.nbImages}
-    ];
+    ] : [];
 
     // Function to get flag emoji from language code
     const getFlagEmoji = langCode => {
@@ -224,137 +189,142 @@ const OverviewResult = ({data, labelKey, descriptionKey, t}) => {
                     </Typography>
                 )}
             </div>
-            <div>
-                <div style={{color: '#2c3e5d', fontWeight: '600', fontSize: '16px', marginBottom: '16px'}}>{data.siteDisplayableName || data.siteName}</div>
-                <div style={overviewStyles.grid}>
-                    {metrics.map(item => (
-                        <div key={item.label} style={overviewStyles.card}>
-                            <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500'}}>{item.label}</div>
-                            <div style={overviewStyles.value}>{item.value}</div>
-                        </div>
-                    ))}
-                    {data.languages && data.languages.length > 0 && (
-                        <div style={{...overviewStyles.card, gridColumn: 'span 2'}}>
-                            <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500', marginBottom: '8px'}}>
-                                {t('result.languages')} ({data.nbLanguages})
-                            </div>
-                            <div style={{display: 'flex', flexWrap: 'wrap', gap: '8px'}}>
-                                {data.languages.map(lang => (
-                                    <div
-                                        key={lang}
-                                        style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '6px',
-                                            padding: '6px 12px',
-                                            backgroundColor: '#f4f6f9',
-                                            borderRadius: '6px',
-                                            fontSize: '14px',
-                                            fontWeight: '500',
-                                            color: '#2c3e5d'
-                                        }}
-                                    >
-                                        <span style={{fontSize: '18px'}}>{getFlagEmoji(lang)}</span>
-                                        <span>{lang.toUpperCase()}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-                {/* Content Activity Section */}
-                <div style={{marginTop: '32px', paddingTop: '24px', borderTop: '2px solid #e8ecf0'}}>
-                    <Typography variant="heading" weight="bold" style={{fontSize: '18px', color: '#1a2332', marginBottom: '16px'}}>
-                        {t('result.contentActivity')}
-                    </Typography>
-
-                    {/* Activity Metrics Grid */}
+            {data && (
+                <div>
+                    <div style={{color: '#2c3e5d', fontWeight: '600', fontSize: '16px', marginBottom: '16px'}}>{data.siteDisplayableName || data.siteName}</div>
                     <div style={overviewStyles.grid}>
-                        <div style={overviewStyles.card}>
-                            <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500'}}>{t('result.newContentLast30Days')}</div>
-                            <div style={{...overviewStyles.value, color: '#22863a'}}>{data.newContentLast30Days}</div>
-                        </div>
-                        <div style={overviewStyles.card}>
-                            <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500'}}>{t('result.modifiedContentLast30Days')}</div>
-                            <div style={{...overviewStyles.value, color: '#0366d6'}}>{data.modifiedContentLast30Days}</div>
-                        </div>
-                        <div style={overviewStyles.card}>
-                            <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500'}}>{t('result.publishedContentLast30Days')}</div>
-                            <div style={{...overviewStyles.value, color: '#6f42c1'}}>{data.publishedContentLast30Days}</div>
-                        </div>
-                        <div style={overviewStyles.card}>
-                            <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500'}}>{t('result.publishedNodes')}</div>
-                            <div style={overviewStyles.value}>{data.publishedNodes}</div>
-                        </div>
-                        <div style={overviewStyles.card}>
-                            <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500'}}>{t('result.unpublishedNodes')}</div>
-                            <div style={overviewStyles.value}>{data.unpublishedNodes}</div>
-                        </div>
-                        <div style={overviewStyles.card}>
-                            <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500'}}>{t('result.averageTimeToPublish')}</div>
-                            <div style={overviewStyles.value}>{data.averageTimeToPublish?.toFixed(1)} {t('result.days')}</div>
-                        </div>
-                    </div>
-
-                    {/* Top Contributors */}
-                    <div style={{...overviewStyles.card, marginTop: '16px'}}>
-                        <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500', marginBottom: '12px'}}>
-                            {t('result.topContributors')}
-                        </div>
-                        {data.topContributors && data.topContributors.length > 0 ? (
-                            <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
-                                {data.topContributors.map((contributor, index) => (
-                                    <div
-                                        key={contributor.username}
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'center',
-                                            padding: '8px 12px',
-                                            backgroundColor: '#f4f6f9',
-                                            borderRadius: '4px'
-                                        }}
-                                    >
-                                        <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                                            <span style={{
-                                                display: 'inline-flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                width: '24px',
-                                                height: '24px',
-                                                borderRadius: '50%',
-                                                backgroundColor: index === 0 ? '#ffd700' : index === 1 ? '#c0c0c0' : index === 2 ? '#cd7f32' : '#e8ecf0',
-                                                fontSize: '12px',
-                                                fontWeight: 'bold',
-                                                color: index < 3 ? '#fff' : '#5c6f90'
-                                            }}
-                                            >
-                                                {index + 1}
-                                            </span>
-                                            <span style={{fontWeight: '500', color: '#2c3e5d'}}>{contributor.username}</span>
-                                        </div>
-                                        <span style={{
-                                            fontSize: '14px',
-                                            fontWeight: '600',
-                                            color: '#0c2f6b',
-                                            backgroundColor: '#e1e7f5',
-                                            padding: '4px 8px',
-                                            borderRadius: '4px'
-                                        }}
-                                        >
-                                            {contributor.contentCount} {t('result.items')}
-                                        </span>
-                                    </div>
-                                ))}
+                        {metrics.map(item => (
+                            <div key={item.label} style={overviewStyles.card}>
+                                <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500'}}>{item.label}</div>
+                                <div style={overviewStyles.value}>{item.value}</div>
                             </div>
-                        ) : (
-                            <div style={{color: '#8b9bb3', fontSize: '13px', fontStyle: 'italic', padding: '12px'}}>
-                                {t('result.noContributorsData')}
+                        ))}
+                        {data.languages && data.languages.length > 0 && (
+                            <div style={{...overviewStyles.card, gridColumn: 'span 2'}}>
+                                <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500', marginBottom: '8px'}}>
+                                    {t('result.languages')} ({data.nbLanguages})
+                                </div>
+                                <div style={{display: 'flex', flexWrap: 'wrap', gap: '8px'}}>
+                                    {data.languages.map(lang => (
+                                        <div
+                                            key={lang}
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '6px',
+                                                padding: '6px 12px',
+                                                backgroundColor: '#f4f6f9',
+                                                borderRadius: '6px',
+                                                fontSize: '14px',
+                                                fontWeight: '500',
+                                                color: '#2c3e5d'
+                                            }}
+                                        >
+                                            <span style={{fontSize: '18px'}}>{getFlagEmoji(lang)}</span>
+                                            <span>{lang.toUpperCase()}</span>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         )}
                     </div>
+
+                    {/* Content Activity Section */}
+                    <div style={{marginTop: '32px', paddingTop: '24px', borderTop: '2px solid #e8ecf0'}}>
+                        <Typography variant="heading" weight="bold" style={{fontSize: '18px', color: '#1a2332', marginBottom: '16px'}}>
+                            {t('result.contentActivity')}
+                        </Typography>
+
+                        {/* Activity Metrics Grid */}
+                        <div style={overviewStyles.grid}>
+                            <div style={overviewStyles.card}>
+                                <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500'}}>{t('result.newContentLast30Days')}</div>
+                                <div style={{...overviewStyles.value, color: '#22863a'}}>{data.newContentLast30Days}</div>
+                            </div>
+                            <div style={overviewStyles.card}>
+                                <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500'}}>{t('result.modifiedContentLast30Days')}</div>
+                                <div style={{...overviewStyles.value, color: '#0366d6'}}>{data.modifiedContentLast30Days}</div>
+                            </div>
+                            <div style={overviewStyles.card}>
+                                <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500'}}>{t('result.publishedContentLast30Days')}</div>
+                                <div style={{...overviewStyles.value, color: '#6f42c1'}}>{data.publishedContentLast30Days}</div>
+                            </div>
+                            <div style={overviewStyles.card}>
+                                <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500'}}>{t('result.publishedNodes')}</div>
+                                <div style={overviewStyles.value}>{data.publishedNodes}</div>
+                            </div>
+                            <div style={overviewStyles.card}>
+                                <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500'}}>{t('result.unpublishedNodes')}</div>
+                                <div style={overviewStyles.value}>{data.unpublishedNodes}</div>
+                            </div>
+                            <div style={overviewStyles.card}>
+                                <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500'}}>{t('result.averageTimeToPublish')}</div>
+                                <div style={overviewStyles.value}>{data.averageTimeToPublish?.toFixed(1)} {t('result.days')}</div>
+                            </div>
+                        </div>
+
+                        {/* Top Contributors */}
+                        <div style={{...overviewStyles.card, marginTop: '16px'}}>
+                            <div style={{color: '#5c6f90', fontSize: '13px', fontWeight: '500', marginBottom: '12px'}}>
+                                {t('result.topContributors')}
+                            </div>
+                            {data.topContributors && data.topContributors.length > 0 ? (
+                                <div style={{display: 'flex', flexDirection: 'column', gap: '8px'}}>
+                                    {data.topContributors.map((contributor, index) => (
+                                        <div
+                                            key={contributor.username}
+                                            style={{
+                                                display: 'flex',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center',
+                                                padding: '8px 12px',
+                                                backgroundColor: '#f4f6f9',
+                                                borderRadius: '4px'
+                                            }}
+                                        >
+                                            <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                                                <span style={{
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    width: '24px',
+                                                    height: '24px',
+                                                    borderRadius: '50%',
+                                                    backgroundColor: index === 0 ? '#ffd700' : index === 1 ? '#c0c0c0' : index === 2 ? '#cd7f32' : '#e8ecf0',
+                                                    fontSize: '12px',
+                                                    fontWeight: 'bold',
+                                                    color: index < 3 ? '#fff' : '#5c6f90'
+                                                }}
+                                                >
+                                                    {index + 1}
+                                                </span>
+                                                <span style={{fontWeight: '500', color: '#2c3e5d'}}>{contributor.username}</span>
+                                            </div>
+                                            <span style={{
+                                                fontSize: '14px',
+                                                fontWeight: '600',
+                                                color: '#0c2f6b',
+                                                backgroundColor: '#e1e7f5',
+                                                padding: '4px 8px',
+                                                borderRadius: '4px'
+                                            }}
+                                            >
+                                                {contributor.contentCount} {t('result.items')}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                                ) : (
+                                    <div style={{color: '#8b9bb3', fontSize: '13px', fontStyle: 'italic', padding: '12px'}}>
+                                        {t('result.noContributorsData')}
+                                    </div>
+                                )}
+                        </div>
+                    </div>
                 </div>
+            )}
+            <div style={{paddingTop: '20px', borderTop: '1px solid #e8ecf0'}}>
+                <FormActions isLoading={isLoading} lastUpdated={lastUpdated} t={t}/>
             </div>
         </Paper>
     );
@@ -387,10 +357,12 @@ OverviewResult.propTypes = {
     }),
     labelKey: PropTypes.string.isRequired,
     descriptionKey: PropTypes.string,
+    isLoading: PropTypes.bool.isRequired,
+    lastUpdated: PropTypes.instanceOf(Date),
     t: PropTypes.func.isRequired
 };
 
-const RawResult = ({result, siteKey, language, labelKey, descriptionKey, selectedReport, t}) => {
+const RawResult = ({result, siteKey, language, labelKey, selectedReport, t}) => {
     if (!result) {
         return null;
     }
@@ -400,14 +372,9 @@ const RawResult = ({result, siteKey, language, labelKey, descriptionKey, selecte
     return (
         <Paper style={{padding: '32px', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04)'}}>
             <div style={{paddingBottom: '20px', borderBottom: '1px solid #e8ecf0', marginBottom: '24px'}}>
-                <Typography variant="heading" weight="bold" style={{fontSize: '20px', color: '#1a2332', marginBottom: '6px', lineHeight: '1.4'}}>
-                    {t(labelKey)}
+                <Typography variant="heading" weight="bold" style={{fontSize: '20px', color: '#1a2332', lineHeight: '1.4'}}>
+                    {t('common.report')} - {t(labelKey)}
                 </Typography>
-                {descriptionKey && (
-                    <Typography variant="body" style={{color: '#5c6f90', fontSize: '14px', lineHeight: '1.6'}}>
-                        {t(descriptionKey)}
-                    </Typography>
-                )}
             </div>
             {parsed && parsed.data && (
                 <ReportResultsTable
@@ -435,91 +402,19 @@ RawResult.propTypes = {
     siteKey: PropTypes.string.isRequired,
     language: PropTypes.string,
     labelKey: PropTypes.string.isRequired,
-    descriptionKey: PropTypes.string,
     selectedReport: PropTypes.object,
-    t: PropTypes.func.isRequired
-};
-
-const ReportMenu = ({reports, selectedReportId, onSelectReport, t}) => {
-    const [openedCategory, setOpenedCategory] = useState('overview');
-
-    // Group reports by category
-    const reportsByCategory = useMemo(() => {
-        const grouped = {};
-        reportCategories.forEach(cat => {
-            grouped[cat.id] = [];
-        });
-
-        (reports || []).forEach(report => {
-            if (report.category && grouped[report.category]) {
-                grouped[report.category].push(report);
-            }
-        });
-
-        return grouped;
-    }, [reports]);
-
-    return (
-        <Paper className={styles.menuPaper}>
-            <nav className={styles.menu}>
-                <Accordion
-                    openedItem={openedCategory}
-                    onSetOpenedItem={setOpenedCategory}
-                >
-                    {reportCategories.map(category => {
-                        const categoryReports = reportsByCategory[category.id];
-                        if (!categoryReports || categoryReports.length === 0) {
-                            return null;
-                        }
-
-                        return (
-                            <AccordionItem
-                                key={category.id}
-                                id={category.id}
-                                label={t(category.labelKey)}
-                            >
-                                <div className={styles.categoryReports}>
-                                    {categoryReports.map(report => {
-                                        const isActive = report.id === selectedReportId;
-                                        const buttonClassName = `${styles.menuButton}${isActive ? ` ${styles.menuButtonActive}` : ''}`;
-
-                                        return (
-                                            <button
-                                                key={report.id}
-                                                type="button"
-                                                className={buttonClassName}
-                                                onClick={() => onSelectReport(report.id)}
-                                            >
-                                                {t(report.labelKey)}
-                                            </button>
-                                        );
-                                    })}
-                                </div>
-                            </AccordionItem>
-                        );
-                    })}
-                </Accordion>
-            </nav>
-        </Paper>
-    );
-};
-
-ReportMenu.propTypes = {
-    onSelectReport: PropTypes.func.isRequired,
-    reports: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        labelKey: PropTypes.string.isRequired,
-        category: PropTypes.string
-    })),
-    selectedReportId: PropTypes.string,
     t: PropTypes.func.isRequired
 };
 
 const FormActions = ({isLoading, lastUpdated, t}) => (
     <div className={styles.actions}>
-        <button type="submit" className={styles.buttonPrimary} disabled={isLoading}>
-            {isLoading ? t('states.loading') : t('actions.runReport')}
-        </button>
+        <Button
+            type="submit"
+            size="big"
+            variant="outlined"
+            label={isLoading ? t('states.loading') : t('actions.runReport')}
+            disabled={isLoading}
+        />
         {lastUpdated && (
             <span style={{color: '#4b5c87', fontSize: '13px'}}>
                 {t('states.lastUpdated', {value: lastUpdated.toLocaleString()})}
@@ -557,7 +452,6 @@ const ResultSection = ({error, isLoading, result, siteKey, language, report, t})
                 siteKey={siteKey}
                 language={language}
                 labelKey={report.labelKey}
-                descriptionKey={report.descriptionKey}
                 selectedReport={report}
                 t={t}
             />
@@ -585,7 +479,7 @@ ResultSection.propTypes = {
     t: PropTypes.func.isRequired
 };
 
-const AdminPanel = () => {
+const AdminPanel = ({initialReportId}) => {
     const {t} = useTranslation('contentReportReact');
 
     const context = window.contextJsParameters || {};
@@ -595,7 +489,7 @@ const AdminPanel = () => {
     const graphqlEndpoint = `${context.contextPath || ''}/modules/graphql`;
 
     const reports = useMemo(() => buildReportsConfig(), []);
-    const [selectedReportId, setSelectedReportId] = useState(reports[0]?.id);
+    const selectedReportId = initialReportId || reports[0]?.id;
 
     const selectedReport = useMemo(
         () => reports.find(report => report.id === selectedReportId) || reports[0],
@@ -608,6 +502,8 @@ const AdminPanel = () => {
     const [result, setResult] = useState(null);
     const [lastUpdated, setLastUpdated] = useState(null);
     const [siteLanguages, setSiteLanguages] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [loadingUsers, setLoadingUsers] = useState(false);
 
     // Fetch site languages on mount
     useEffect(() => {
@@ -633,6 +529,28 @@ const AdminPanel = () => {
 
         fetchSiteLanguages();
     }, [siteKey, executeQuery]);
+
+    // Fetch all users on mount
+    useEffect(() => {
+        const fetchUsers = async () => {
+            setLoadingUsers(true);
+            try {
+                const data = await executeQuery(GET_ALL_USERS_QUERY, {});
+                const rawUsers = data?.jcr?.nodesByQuery?.nodes || [];
+                const userList = rawUsers.map(user => ({
+                    username: user.name,
+                    email: user.property?.value || ''
+                }));
+                setUsers(userList);
+            } catch (err) {
+                console.error('Failed to fetch users:', err);
+            } finally {
+                setLoadingUsers(false);
+            }
+        };
+
+        fetchUsers();
+    }, [executeQuery]);
 
     useEffect(() => {
         setFields(buildInitialFields(selectedReport, {siteKey, language}));
@@ -777,6 +695,33 @@ const AdminPanel = () => {
         console.warn('[contentReportReact] Content Editor picker API is not available.');
     }, [baseContentPath, handleFieldChange, language, siteKey]);
 
+    const getSelectOptions = useCallback(field => {
+        if (field.type === 'languageSelect') {
+            return {
+                options: siteLanguages.map(lang => ({value: lang, labelKey: lang})),
+                isLoading: false,
+                renderOption: option => option.value
+            };
+        }
+
+        if (field.type === 'userSelect') {
+            return {
+                options: users.map(user => ({
+                    value: user.username,
+                    label: `${user.username}${user.email ? ` (${user.email})` : ''}`
+                })),
+                isLoading: loadingUsers,
+                renderOption: option => option.label
+            };
+        }
+
+        return {
+            options: field.options || [],
+            isLoading: false,
+            renderOption: option => t(option.labelKey)
+        };
+    }, [siteLanguages, users, loadingUsers, t]);
+
     const renderGenericField = useCallback(field => {
         if (!field || !isFieldActive(field, fields)) {
             return null;
@@ -815,10 +760,9 @@ const AdminPanel = () => {
             );
         }
 
-        if (field.type === 'select' || field.type === 'languageSelect') {
-            const options = field.type === 'languageSelect' ?
-                siteLanguages.map(lang => ({value: lang, labelKey: lang})) :
-                (field.options || []);
+        if (field.type === 'select' || field.type === 'languageSelect' || field.type === 'userSelect') {
+            const {options, isLoading, renderOption} = getSelectOptions(field);
+            const placeholder = field.placeholderKey ? t(field.placeholderKey) : '';
 
             return (
                 <div key={field.name} className={styles.formRow}>
@@ -826,12 +770,16 @@ const AdminPanel = () => {
                     <select
                         id={field.name}
                         value={fields[field.name] ?? ''}
+                        disabled={isLoading}
                         className={styles.input}
                         onChange={event => handleFieldChange(field.name, event.target.value)}
                     >
+                        <option value="">
+                            {isLoading ? t('common.loading') || 'Loading...' : placeholder || t('common.selectOption') || 'Select...'}
+                        </option>
                         {options.map(option => (
                             <option key={option.value} value={option.value}>
-                                {field.type === 'languageSelect' ? option.value : t(option.labelKey)}
+                                {renderOption(option)}
                             </option>
                         ))}
                     </select>
@@ -866,44 +814,14 @@ const AdminPanel = () => {
                 </div>
             </div>
         );
-    }, [fields, handleFieldChange, openPathPicker, t, siteLanguages]);
+    }, [fields, handleFieldChange, openPathPicker, t, getSelectOptions]);
 
     const renderFormFields = () => {
         if (!selectedReport || selectedReport.type === 'overview') {
             return null;
         }
 
-        // Direct component rendering for known components
-        if (selectedReport.component === 'ByAuthorAndDate') {
-            return (
-                <ByAuthorAndDate
-                    baseContentPath={baseContentPath}
-                    definitions={selectedReport.fields || []}
-                    fields={fields}
-                    t={t}
-                    onFieldChange={handleFieldChange}
-                    onOpenPathPicker={openPathPicker}
-                />
-            );
-        }
-
-        // Dynamic component resolution for other cases
-        if (selectedReport.component) {
-            const ReportComponent = resolveReportComponent(selectedReport.component);
-
-            if (ReportComponent && typeof ReportComponent === 'function') {
-                return React.createElement(ReportComponent, {
-                    baseContentPath,
-                    definitions: selectedReport.fields || [],
-                    fields,
-                    t,
-                    onFieldChange: handleFieldChange,
-                    onOpenPathPicker: openPathPicker
-                });
-            }
-        }
-
-        // Fallback to generic fields
+        // Render generic fields for all reports
         const genericFields = selectedReport.fields?.map(renderGenericField) || null;
         return genericFields ? (
             <Paper style={{padding: '32px', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04)', display: 'flex', flexDirection: 'column', gap: '28px'}}>
@@ -918,6 +836,9 @@ const AdminPanel = () => {
                     )}
                 </div>
                 {genericFields}
+                <div style={{paddingTop: '20px', borderTop: '1px solid #e8ecf0'}}>
+                    <FormActions isLoading={loading} lastUpdated={lastUpdated} t={t}/>
+                </div>
             </Paper>
         ) : null;
     };
@@ -930,40 +851,28 @@ const AdminPanel = () => {
             <LayoutContent
                 content={(
                     <div className={styles.pageContainer}>
-                        <div className={styles.panelLayout}>
-                            <ReportMenu
-                                reports={reports}
-                                selectedReportId={selectedReportId}
-                                t={t}
-                                onSelectReport={setSelectedReportId}
-                            />
-                            <div className={styles.content}>
-                                {selectedReport?.type === 'overview' ? (
-                                    // For overview report: show result panel on top, button below
-                                    <>
-                                        {!loading && result && result.kind === 'overview' && (
-                                            <OverviewResult
-                                                data={result.overview}
-                                                labelKey={selectedReport.labelKey}
-                                                descriptionKey={selectedReport.descriptionKey}
-                                                t={t}
-                                            />
-                                        )}
-                                        <form className={styles.form} onSubmit={handleSubmit}>
-                                            <FormActions isLoading={loading} lastUpdated={lastUpdated} t={t}/>
-                                        </form>
-                                    </>
-                                ) : selectedReport ? (
-                                    <form className={styles.form} onSubmit={handleSubmit}>
-                                        {renderFormFields()}
-                                        <FormActions isLoading={loading} lastUpdated={lastUpdated} t={t}/>
-                                    </form>
-                                ) : (
-                                    <div className={styles.error}>
-                                        {t('errors.noReportSelected')}
-                                    </div>
-                                )}
-                            </div>
+                        <div className={styles.contentFullWidth}>
+                            {selectedReport?.type === 'overview' ? (
+                                // For overview report: show result with button in paper
+                                <form className={styles.form} onSubmit={handleSubmit}>
+                                    <OverviewResult
+                                        data={result?.overview}
+                                        labelKey={selectedReport.labelKey}
+                                        descriptionKey={selectedReport.descriptionKey}
+                                        isLoading={loading}
+                                        lastUpdated={lastUpdated}
+                                        t={t}
+                                    />
+                                </form>
+                            ) : selectedReport ? (
+                                <form className={styles.form} onSubmit={handleSubmit}>
+                                    {renderFormFields()}
+                                </form>
+                            ) : (
+                                <div className={styles.error}>
+                                    {t('errors.noReportSelected')}
+                                </div>
+                            )}
                         </div>
                         <div className={styles.fullWidthResults}>
                             {selectedReport?.type !== 'overview' && (
@@ -978,5 +887,9 @@ const AdminPanel = () => {
 };
 
 AdminPanel.displayName = 'ContentReportAdminPanel';
+
+AdminPanel.propTypes = {
+    initialReportId: PropTypes.string
+};
 
 export default AdminPanel;

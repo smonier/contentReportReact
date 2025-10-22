@@ -1,4 +1,29 @@
 {
+  "content-reports": {
+    "label": {
+      "contentreports": "Content Reports",
+      "byAuthorAndDate": "By author and date",
+      "references": "References",
+      "wipContent": "Work in progress",
+      "contentWaitingPublication": "Workflow instances",
+      "markedForDeletion": "Marked for deletion",
+      "byLanguage": "By Language",
+      "pagesWithoutTitle": "Pages without title",
+      "pagesUntranslated": "Untranslated content",
+      "byVisibilityConditions": "By Visibility Conditions",
+      "liveContents": "Live visibility conditions",
+      "expiredContents": "Expired content",
+      "futureContents": "Scheduled content",
+      "byMetadata": "By Metadata",
+      "pagesWithoutKeywords": "Pages without keywords",
+      "pagesWithoutDescription": "Pages without description",
+      "system": "System",
+      "lockedContent": "Locked content",
+      "customCacheContent": "Custom cache content",
+      "aclInheritanceBreak": "ACL inheritance break",
+      "overview": "Site overview"
+    }
+  },
   "contentReportReact": {
     "label": "Content Reports",
     "header": "Content Reports - Site {{siteInfo}}",
@@ -104,7 +129,8 @@
       "browse": "Browse"
     },
     "common": {
-      "loading": "Loading..."
+      "loading": "Loading...",
+      "report": "Report"
     },
     "states": {
       "loading": "Loading…",

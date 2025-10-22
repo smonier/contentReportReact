@@ -2,7 +2,7 @@ import React, {useState, useMemo, useCallback} from 'react';
 import PropTypes from 'prop-types';
 import {useTranslation} from 'react-i18next';
 import {Typography, Table, TableHead, TableBody, TableRow, TableHeadCell, TableBodyCell, TablePagination, Button} from '@jahia/moonstone';
-import {Download} from '@jahia/moonstone/dist/icons';
+import {Download, OpenInNew} from '@jahia/moonstone/dist/icons';
 import styles from './ReportResultsTable.module.scss';
 
 const formatDate = dateString => {
@@ -148,7 +148,7 @@ const ReportResultsTable = ({data, siteKey, language, columns, reportId, reportT
     // Hooks must be at the top before any conditionals
     const {t} = useTranslation('contentReportReact');
     const [currentPage, setCurrentPage] = useState(1);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [rowsPerPage, setRowsPerPage] = useState(50);
     const [sortColumn, setSortColumn] = useState(null);
     const [sortDirection, setSortDirection] = useState('asc');
 
@@ -221,6 +221,7 @@ const ReportResultsTable = ({data, siteKey, language, columns, reportId, reportT
                 return (
                     <a href={jcontentUrl} target="_blank" rel="noopener noreferrer" className={styles.pathLink}>
                         {value}
+                        <OpenInNew size="small" style={{marginLeft: '4px', verticalAlign: 'middle'}}/>
                     </a>
                 );
             }
@@ -230,8 +231,9 @@ const ReportResultsTable = ({data, siteKey, language, columns, reportId, reportT
             if (path) {
                 const jcontentUrl = buildJContentUrl(path, siteKey, language);
                 return (
-                    <a href={jcontentUrl} target="_blank" rel="noopener noreferrer">
+                    <a href={jcontentUrl} target="_blank" rel="noopener noreferrer" className={styles.linkWithIcon}>
                         {t('result.viewContent')}
+                        <OpenInNew size="small" style={{marginLeft: '4px', verticalAlign: 'middle'}}/>
                     </a>
                 );
             }

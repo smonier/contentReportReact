@@ -104,7 +104,8 @@
       "browse": "Durchsuchen"
     },
     "common": {
-      "loading": "Laden..."
+      "loading": "Laden...",
+      "report": "Bericht"
     },
     "states": {
       "loading": "Lädt…",
