@@ -36,7 +36,7 @@ export const registerJContentRoutes = () => {
         path: `${DEFAULT_ROUTE}*`, // Catch everything and let the app handle routing logic
         defaultPath: DEFAULT_ROUTE,
         requireModuleInstalledOnSite: 'contentReportReact',
-        requiredPermission: 'contentReports',
+
         render: createReportRender('overview')
 
     });
@@ -49,7 +49,7 @@ export const registerJContentRoutes = () => {
         isSelectable: true,
         label: 'contentReportReact:menu.byAuthorAndDate',
         requireModuleInstalledOnSite: 'contentReportReact',
-        requiredPermission: 'contentReports',
+
         render: createReportRender('20')
     });
 
@@ -59,7 +59,6 @@ export const registerJContentRoutes = () => {
         isSelectable: true,
         label: 'contentReportReact:menu.references',
         requireModuleInstalledOnSite: 'contentReportReact',
-        requiredPermission: 'contentReports',
         render: createReportRender('23')
     });
 
@@ -69,7 +68,7 @@ export const registerJContentRoutes = () => {
         isSelectable: true,
         label: 'contentReportReact:menu.wipContent',
         requireModuleInstalledOnSite: 'contentReportReact',
-        requiredPermission: 'contentReports',
+
         render: createReportRender('22')
     });
 
@@ -79,7 +78,7 @@ export const registerJContentRoutes = () => {
         isSelectable: true,
         label: 'contentReportReact:menu.contentWaitingPublication',
         requireModuleInstalledOnSite: 'contentReportReact',
-        requiredPermission: 'contentReports',
+
         render: createReportRender('16')
     });
 
@@ -89,7 +88,7 @@ export const registerJContentRoutes = () => {
         isSelectable: true,
         label: 'contentReportReact:menu.markedForDeletion',
         requireModuleInstalledOnSite: 'contentReportReact',
-        requiredPermission: 'contentReports',
+
         render: createReportRender('24')
     });
 
@@ -100,8 +99,7 @@ export const registerJContentRoutes = () => {
         isSelectable: false,
         targets: ['jcontent-jcontent-contentReports'],
         label: 'contentReportReact:categories.languages',
-        requireModuleInstalledOnSite: 'contentReportReact',
-        requiredPermission: 'contentReports'
+        requireModuleInstalledOnSite: 'contentReportReact'
     });
 
     // Pages Without Title
@@ -110,7 +108,7 @@ export const registerJContentRoutes = () => {
         isSelectable: true,
         label: 'contentReportReact:menu.pagesWithoutTitle',
         requireModuleInstalledOnSite: 'contentReportReact',
-        requiredPermission: 'contentReports',
+
         render: createReportRender('10')
     });
 
@@ -120,7 +118,7 @@ export const registerJContentRoutes = () => {
         isSelectable: true,
         label: 'contentReportReact:menu.pagesUntranslated',
         requireModuleInstalledOnSite: 'contentReportReact',
-        requiredPermission: 'contentReports',
+
         render: createReportRender('21')
     });
 
@@ -131,8 +129,7 @@ export const registerJContentRoutes = () => {
         targets: ['jcontent-jcontent-contentReports'],
         isSelectable: false,
         label: 'contentReportReact:categories.visibility',
-        requireModuleInstalledOnSite: 'contentReportReact',
-        requiredPermission: 'contentReports'
+        requireModuleInstalledOnSite: 'contentReportReact'
     });
 
     // Live Contents
@@ -141,7 +138,7 @@ export const registerJContentRoutes = () => {
         isSelectable: true,
         label: 'contentReportReact:menu.liveContents',
         requireModuleInstalledOnSite: 'contentReportReact',
-        requiredPermission: 'contentReports',
+
         render: createReportRender('25')
     });
 
@@ -151,7 +148,7 @@ export const registerJContentRoutes = () => {
         isSelectable: true,
         label: 'contentReportReact:menu.expiredContents',
         requireModuleInstalledOnSite: 'contentReportReact',
-        requiredPermission: 'contentReports',
+
         render: createReportRender('26')
     });
 
@@ -161,7 +158,7 @@ export const registerJContentRoutes = () => {
         isSelectable: true,
         label: 'contentReportReact:menu.futureContents',
         requireModuleInstalledOnSite: 'contentReportReact',
-        requiredPermission: 'contentReports',
+
         render: createReportRender('27')
     });
 
@@ -172,8 +169,7 @@ export const registerJContentRoutes = () => {
         targets: ['jcontent-jcontent-contentReports'],
         isSelectable: false,
         label: 'contentReportReact:categories.metadata',
-        requireModuleInstalledOnSite: 'contentReportReact',
-        requiredPermission: 'contentReports'
+        requireModuleInstalledOnSite: 'contentReportReact'
     });
 
     // Pages Without Keywords
@@ -182,7 +178,7 @@ export const registerJContentRoutes = () => {
         isSelectable: true,
         label: 'contentReportReact:menu.pagesWithoutKeywords',
         requireModuleInstalledOnSite: 'contentReportReact',
-        requiredPermission: 'contentReports',
+
         render: createReportRender('11')
     });
 
@@ -192,7 +188,7 @@ export const registerJContentRoutes = () => {
         isSelectable: true,
         label: 'contentReportReact:menu.pagesWithoutDescription',
         requireModuleInstalledOnSite: 'contentReportReact',
-        requiredPermission: 'contentReports',
+
         render: createReportRender('12')
     });
 
@@ -203,8 +199,7 @@ export const registerJContentRoutes = () => {
         targets: ['jcontent-jcontent-contentReports'],
         isSelectable: false,
         label: 'contentReportReact:categories.system',
-        requireModuleInstalledOnSite: 'contentReportReact',
-        requiredPermission: 'contentReports'
+        requireModuleInstalledOnSite: 'contentReportReact'
     });
 
     // Locked Content
@@ -213,7 +208,7 @@ export const registerJContentRoutes = () => {
         isSelectable: true,
         label: 'contentReportReact:menu.lockedContent',
         requireModuleInstalledOnSite: 'contentReportReact',
-        requiredPermission: 'contentReports',
+
         render: createReportRender('15')
     });
 
@@ -223,7 +218,7 @@ export const registerJContentRoutes = () => {
         isSelectable: true,
         label: 'contentReportReact:menu.customCacheContent',
         requireModuleInstalledOnSite: 'contentReportReact',
-        requiredPermission: 'contentReports',
+
         render: createReportRender('18')
     });
 
@@ -233,7 +228,7 @@ export const registerJContentRoutes = () => {
         isSelectable: true,
         label: 'contentReportReact:menu.aclInheritanceBreak',
         requireModuleInstalledOnSite: 'contentReportReact',
-        requiredPermission: 'contentReports',
+
         render: createReportRender('19')
     });
 
@@ -243,7 +238,7 @@ export const registerJContentRoutes = () => {
         isSelectable: true,
         label: 'contentReportReact:menu.overview',
         requireModuleInstalledOnSite: 'contentReportReact',
-        requiredPermission: 'contentReports',
+
         render: createReportRender('overview')
     });
 
