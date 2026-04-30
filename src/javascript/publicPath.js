@@ -1,1 +1,1 @@
-__webpack_public_path__ = window.contextJsParameters.contextPath + '/modules/contentReportReact/javascript/apps/';
+__webpack_public_path__ = window.contextJsParameters.contextPath + '/modules/content-reports-react/javascript/apps/';
