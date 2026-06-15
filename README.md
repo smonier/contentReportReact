@@ -73,7 +73,7 @@ The Content Report React module offers a modern, user-friendly interface for gen
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/smonier/contentReportReact.git
+git clone https://github.com/jahia/contentReportReact.git
 cd contentReportReact
 ```
 
@@ -84,7 +84,7 @@ mvn clean install
 
 3. Deploy the generated JAR to your Jahia server:
 ```bash
-cp target/contentReportReact-1.0.0-SNAPSHOT.jar $JAHIA_HOME/modules/
+cp target/content-reports-react-2.0.1-SNAPSHOT.jar $JAHIA_HOME/modules/
 ```
 
 ### From Binary
@@ -208,7 +208,7 @@ public class MyCustomReport extends QueryReport {
 ### Project Structure
 
 ```
-contentReportReact/
+content-reports-react/
 ├── src/
 │   ├── javascript/          # React frontend
 │   │   ├── AdminPanel/      # Main UI components
@@ -439,12 +439,19 @@ SOFTWARE.
 ## Support
 
 For issues, questions, or contributions:
-- GitHub Issues: [https://github.com/smonier/contentReportReact/issues](https://github.com/smonier/contentReportReact/issues)
+- GitHub Issues: [https://github.com/jahia/contentReportReact/issues](https://github.com/jahia/contentReportReact/issues)
 - Jahia Community: [https://community.jahia.com](https://community.jahia.com)
 
 ## Changelog
 
-### Version 1.0.0-SNAPSHOT
+### Version 2.0.1-SNAPSHOT
+- Updated module naming to kebab-case (content-reports-react) for Maven artifact consistency
+- Enhanced module key references in webpack and route configurations
+
+### Version 2.0.0
+- Multiple report additions and improvements
+
+### Version 1.0.0-SNAPSHOT (Deprecated)
 - Initial release
 - 12+ pre-configured reports
 - Site overview dashboard with comprehensive metrics
