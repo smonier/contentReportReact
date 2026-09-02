@@ -50,6 +50,42 @@ const buildJContentUrl = (path, siteKey, language) => {
     return `${baseUrl}/jahia/jcontent/${siteKey}/${language || 'en'}/pages/${cleanPath}`;
 };
 
+const ACTIVITY_EXPORT_FIELDS = [
+    'name',
+    'path',
+    'type',
+    'created',
+    'createdBy',
+    'lastModified',
+    'lastModifiedBy',
+    'lastPublished',
+    'lastPublishedBy',
+    'isNew',
+    'isModified',
+    'isPublished'
+];
+
+const downloadFile = (content, mimeType, extension) => {
+    const blob = new Blob([content], {type: `${mimeType};charset=utf-8;`});
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `content-activity_${new Date().getTime()}.${extension}`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+};
+
+const exportActivityToJSON = rows => {
+    // Keep only the reported fields, in a stable order, so the export does not
+    // leak whatever incidental keys the GraphQL payload happens to carry.
+    const payload = rows.map(row => ACTIVITY_EXPORT_FIELDS.reduce((acc, field) => {
+        acc[field] = row[field] === undefined ? null : row[field];
+
+        return acc;
+    }, {}));
+
+    downloadFile(JSON.stringify(payload, null, 2), 'application/json', 'json');
+};
+
 const exportActivityToCSV = (rows, t) => {
     const headers = [
         t('result.activityTable.columns.name'),
@@ -86,12 +122,7 @@ const exportActivityToCSV = (rows, t) => {
         ].map(escapeCell).join(','))
     ].join('\n');
 
-    const blob = new Blob([csvContent], {type: 'text/csv;charset=utf-8;'});
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `content-activity_${new Date().getTime()}.csv`;
-    link.click();
-    URL.revokeObjectURL(link.href);
+    downloadFile(csvContent, 'text/csv', 'csv');
 };
 
 const compareRows = (left, right, sortColumn, sortDirection) => {
@@ -226,6 +257,14 @@ const ContentActivityTable = ({activity, total, siteKey, language, t}) => {
                             label={t('result.activityTable.exportCsv')}
                             disabled={sortedRows.length === 0}
                             onClick={() => exportActivityToCSV(sortedRows, t)}
+                        />
+                        <Button
+                            size="small"
+                            variant="outlined"
+                            icon={<Download/>}
+                            label={t('result.activityTable.exportJson')}
+                            disabled={sortedRows.length === 0}
+                            onClick={() => exportActivityToJSON(sortedRows)}
                         />
                     </div>
                 </div>

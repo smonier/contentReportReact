@@ -143,6 +143,7 @@
         "capped": "Affichage des {{shown}} éléments les plus récents sur {{total}}. Réduisez la période ou utilisez un rapport dédié pour la liste complète.",
         "noActivity": "Aucun contenu n'a été créé, modifié ou publié au cours des 30 derniers jours.",
         "exportCsv": "Exporter en CSV",
+        "exportJson": "Exporter en JSON",
         "unknownAuthor": "Inconnu",
         "rowsPerPage": "Lignes par page :",
         "of": "sur",

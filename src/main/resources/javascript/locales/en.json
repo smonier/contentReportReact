@@ -144,6 +144,7 @@
         "capped": "Showing the {{shown}} most recent items out of {{total}}. Narrow the window or use a dedicated report for the full list.",
         "noActivity": "No content was created, modified or published in the last 30 days.",
         "exportCsv": "Export CSV",
+        "exportJson": "Export JSON",
         "unknownAuthor": "Unknown",
         "rowsPerPage": "Rows per page:",
         "of": "of",
