@@ -139,6 +139,32 @@
       "topContributors": "Top Contributors",
       "items": "items",
       "noContributorsData": "No contributor data available",
+      "activityTable": {
+        "title": "Detailed activity log ({{total}} items)",
+        "capped": "Showing the {{shown}} most recent items out of {{total}}. Narrow the window or use a dedicated report for the full list.",
+        "noActivity": "No content was created, modified or published in the last 30 days.",
+        "exportCsv": "Export CSV",
+        "unknownAuthor": "Unknown",
+        "rowsPerPage": "Rows per page:",
+        "of": "of",
+        "filters": {
+          "created": "Created",
+          "modified": "Modified",
+          "published": "Published"
+        },
+        "columns": {
+          "name": "Title",
+          "path": "Path",
+          "type": "Type",
+          "created": "Created",
+          "createdBy": "Created by",
+          "modified": "Modified",
+          "modifiedBy": "Modified by",
+          "published": "Last published",
+          "publishedBy": "Published by",
+          "activity": "Activity"
+        }
+      },
       "rawJson": "Raw JSON",
       "viewContent": "View"
     },

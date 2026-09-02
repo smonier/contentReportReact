@@ -5,6 +5,7 @@ import {useTranslation} from 'react-i18next';
 import axios from 'axios';
 import {buildReportsConfig} from './AdminPanel.constants';
 import ReportResultsTable from './reports/ReportResultsTable';
+import ContentActivityTable from './reports/ContentActivityTable';
 import UsersGroupsReport from './reports/UsersGroupsReport';
 import styles from './AdminPanel.module.scss';
 import {OVERVIEW_QUERY, RAW_REPORT_QUERY, GET_SITE_LANGUAGES_QUERY, GET_ALL_USERS_QUERY} from '../graphql/queries';
@@ -145,7 +146,7 @@ const tryParseJSON = value => {
     return value;
 };
 
-const OverviewResult = ({data, labelKey, descriptionKey, isLoading, lastUpdated, t}) => {
+const OverviewResult = ({data, labelKey, descriptionKey, siteKey, language, isLoading, lastUpdated, t}) => {
     const metrics = data ? [
         {label: t('result.nbPages'), value: data.nbPages},
         {label: t('result.nbTemplates'), value: data.nbTemplates},
@@ -327,6 +328,15 @@ const OverviewResult = ({data, labelKey, descriptionKey, isLoading, lastUpdated,
                                     </div>
                                 )}
                         </div>
+
+                        {/* Detailed list of everything touched in the window */}
+                        <ContentActivityTable
+                            activity={data.recentActivity}
+                            total={data.recentActivityTotal}
+                            siteKey={siteKey}
+                            language={language}
+                            t={t}
+                        />
                     </div>
                 </div>
             )}
@@ -360,10 +370,14 @@ OverviewResult.propTypes = {
         topContributors: PropTypes.arrayOf(PropTypes.shape({
             username: PropTypes.string,
             contentCount: PropTypes.number
-        }))
+        })),
+        recentActivityTotal: PropTypes.number,
+        recentActivity: PropTypes.arrayOf(PropTypes.object)
     }),
     labelKey: PropTypes.string.isRequired,
     descriptionKey: PropTypes.string,
+    siteKey: PropTypes.string,
+    language: PropTypes.string,
     isLoading: PropTypes.bool.isRequired,
     lastUpdated: PropTypes.instanceOf(Date),
     t: PropTypes.func.isRequired
@@ -449,6 +463,8 @@ const ResultSection = ({error, isLoading, result, siteKey, language, report, t})
                 data={result.overview}
                 labelKey={report.labelKey}
                 descriptionKey={report.descriptionKey}
+                siteKey={siteKey}
+                language={language}
                 t={t}
             />
         )}
@@ -869,6 +885,8 @@ const AdminPanel = ({initialReportId}) => {
                                         data={result?.overview}
                                         labelKey={selectedReport.labelKey}
                                         descriptionKey={selectedReport.descriptionKey}
+                                        siteKey={siteKey}
+                                        language={language}
                                         isLoading={loading}
                                         lastUpdated={lastUpdated}
                                         t={t}

@@ -46,6 +46,7 @@ package org.jahia.modules.contentreports.bean;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.query.QueryWrapper;
@@ -55,8 +56,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -67,6 +73,13 @@ import java.util.*;
 public class ReportOverview extends BaseReport {
     private static Logger logger = LoggerFactory.getLogger(ReportOverview.class);
     protected static final String BUNDLE = "resources.contentReportReact";
+
+    /** Node type the activity list is restricted to, so it stays consistent with the activity counters. */
+    private static final String JMIX_EDITORIAL_CONTENT = "jmix:editorialContent";
+    /** Upper bound on the number of detailed activity rows returned, to keep the payload reasonable. */
+    private static final int MAX_ACTIVITY_ITEMS = 500;
+    /** ISO 8601 formatter, parseable by {@code new Date(...)} on the front-end. Immutable, so shared. */
+    private static final DateTimeFormatter ISO_DATE_FORMAT = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
     private Integer pagesNumber;
     private Integer templatesNumber;
@@ -86,6 +99,8 @@ public class ReportOverview extends BaseReport {
     private Integer publishedNodes;
     private Double averageTimeToPublish; // in days
     private List<Map<String, Object>> topContributors;
+    private List<Map<String, Object>> recentActivity;
+    private Integer recentActivityTotal;
 
 
     /**
@@ -114,6 +129,8 @@ public class ReportOverview extends BaseReport {
         this.publishedNodes = 0;
         this.averageTimeToPublish = 0.0;
         this.topContributors = new ArrayList<>();
+        this.recentActivity = new ArrayList<>();
+        this.recentActivityTotal = 0;
     }
 
     @Override
@@ -280,6 +297,199 @@ public class ReportOverview extends BaseReport {
             logger.error("Error calculating top contributors", e);
             this.topContributors = new ArrayList<>();
         }
+
+        /* Getting the detailed list of content touched in the last 30 days */
+        collectRecentActivity(session, thirtyDaysAgo);
+    }
+
+    /**
+     * Builds the detailed list of editorial content created, modified or published within the activity window.
+     *
+     * Two queries are needed because publishing a node updates neither {@code jcr:created} nor
+     * {@code jcr:lastModified}: a node published in the window may fall outside the created/modified query.
+     * Results are merged by node identifier and sorted by most recent activity first.
+     *
+     * @param session    the JCR session to query, never held beyond this call
+     * @param cutoffDate the start of the activity window, formatted as {@code yyyy-MM-dd}
+     */
+    private void collectRecentActivity(JCRSessionWrapper session, String cutoffDate) {
+        try {
+            String cutoffLiteral = "CAST('" + cutoffDate + "T00:00:00.000Z' AS DATE)";
+            // Same instant as the literal above, so the per-row flags agree with what the queries selected.
+            long cutoffMillis = parseUtcMidnight(cutoffDate);
+            Map<String, Map<String, Object>> activityMap = new LinkedHashMap<>();
+
+            String createdOrModifiedQueryStr = "SELECT * FROM [" + JMIX_EDITORIAL_CONTENT + "] AS item " +
+                    "WHERE ISDESCENDANTNODE(item,['" + siteNode.getPath() + "']) " +
+                    "AND (item.[jcr:created] >= " + cutoffLiteral + " " +
+                    "OR item.[jcr:lastModified] >= " + cutoffLiteral + ")";
+            collectActivityItems(session, createdOrModifiedQueryStr, cutoffMillis, activityMap, false);
+
+            String publishedQueryStr = "SELECT * FROM [jmix:lastPublished] AS item " +
+                    "WHERE ISDESCENDANTNODE(item,['" + siteNode.getPath() + "']) " +
+                    "AND item.[j:lastPublished] >= " + cutoffLiteral;
+            collectActivityItems(session, publishedQueryStr, cutoffMillis, activityMap, true);
+
+            List<Map<String, Object>> activityList = new ArrayList<>(activityMap.values());
+            activityList.sort((left, right) -> Long.compare(
+                    (Long) right.get("lastActivityTimestamp"),
+                    (Long) left.get("lastActivityTimestamp")));
+
+            this.recentActivityTotal = activityList.size();
+            this.recentActivity = activityList.size() > MAX_ACTIVITY_ITEMS ?
+                    new ArrayList<>(activityList.subList(0, MAX_ACTIVITY_ITEMS)) :
+                    activityList;
+
+            logger.debug("Content activity list: {} items returned out of {} matching nodes",
+                    this.recentActivity.size(), this.recentActivityTotal);
+        } catch (Exception e) {
+            logger.error("Error building the content activity list", e);
+            this.recentActivity = new ArrayList<>();
+            this.recentActivityTotal = 0;
+        }
+    }
+
+    /**
+     * Runs one activity query and merges its rows into the accumulator, keyed by node identifier.
+     *
+     * @param session               the JCR session to query
+     * @param queryStr              the JCR-SQL2 statement to execute
+     * @param cutoffMillis          the start of the activity window, as epoch milliseconds
+     * @param activityMap           accumulator of activity items, first writer for an identifier wins
+     * @param requireEditorialType  when true, discard nodes that are not {@code jmix:editorialContent},
+     *                              so the list matches the activity counters
+     * @throws RepositoryException if the query cannot be executed
+     */
+    private void collectActivityItems(JCRSessionWrapper session, String queryStr, long cutoffMillis,
+                                      Map<String, Map<String, Object>> activityMap, boolean requireEditorialType)
+            throws RepositoryException {
+        QueryWrapper query = session.getWorkspace().getQueryManager().createQuery(queryStr, Query.JCR_SQL2);
+        NodeIterator nodes = query.execute().getNodes();
+        while (nodes.hasNext()) {
+            try {
+                JCRNodeWrapper node = (JCRNodeWrapper) nodes.nextNode();
+                if (requireEditorialType && !node.isNodeType(JMIX_EDITORIAL_CONTENT)) {
+                    continue;
+                }
+
+                String identifier = node.getIdentifier();
+                if (!activityMap.containsKey(identifier)) {
+                    activityMap.put(identifier, buildActivityItem(node, cutoffMillis));
+                }
+            } catch (RepositoryException e) {
+                logger.debug("Skipping a node while building the content activity list", e);
+            }
+        }
+    }
+
+    /**
+     * Maps one node to a flat activity row: identity, the three activity dates and their authors.
+     *
+     * @param node          the node to describe
+     * @param cutoffMillis  the start of the activity window, used to flag which events happened in it
+     * @return a mutable map of primitive values, safe to serialise once the session is gone
+     * @throws RepositoryException if the node identity cannot be read
+     */
+    private Map<String, Object> buildActivityItem(JCRNodeWrapper node, long cutoffMillis) throws RepositoryException {
+        Calendar created = getDateProperty(node, "jcr:created");
+        Calendar modified = getDateProperty(node, "jcr:lastModified");
+        Calendar published = getDateProperty(node, "j:lastPublished");
+
+        Map<String, Object> item = new HashMap<>();
+        item.put("name", node.getDisplayableName());
+        item.put("path", node.getPath());
+        item.put("type", node.getPrimaryNodeType().getAlias());
+        item.put("created", formatIsoDate(created));
+        item.put("createdBy", getStringProperty(node, "jcr:createdBy"));
+        item.put("lastModified", formatIsoDate(modified));
+        item.put("lastModifiedBy", getStringProperty(node, "jcr:lastModifiedBy"));
+        item.put("lastPublished", formatIsoDate(published));
+        item.put("lastPublishedBy", getStringProperty(node, "j:lastPublishedBy"));
+        item.put("isNew", isWithinWindow(created, cutoffMillis));
+        item.put("isModified", isWithinWindow(modified, cutoffMillis));
+        item.put("isPublished", isWithinWindow(published, cutoffMillis));
+        item.put("lastActivityTimestamp", mostRecentTimestamp(created, modified, published));
+        return item;
+    }
+
+    /**
+     * Reads a date property, returning null when it is absent or unreadable.
+     *
+     * @param node         the node to read from
+     * @param propertyName the property name
+     * @return the property value, or null
+     */
+    private Calendar getDateProperty(JCRNodeWrapper node, String propertyName) {
+        try {
+            return node.hasProperty(propertyName) ? node.getProperty(propertyName).getDate() : null;
+        } catch (RepositoryException e) {
+            logger.debug("Cannot read date property {}", propertyName, e);
+            return null;
+        }
+    }
+
+    /**
+     * Reads a string property, returning an empty string when it is absent or unreadable.
+     *
+     * @param node         the node to read from
+     * @param propertyName the property name
+     * @return the property value, or an empty string
+     */
+    private String getStringProperty(JCRNodeWrapper node, String propertyName) {
+        try {
+            return node.hasProperty(propertyName) ? node.getProperty(propertyName).getString() : "";
+        } catch (RepositoryException e) {
+            logger.debug("Cannot read string property {}", propertyName, e);
+            return "";
+        }
+    }
+
+    /**
+     * @param cutoffDate a {@code yyyy-MM-dd} date
+     * @return midnight UTC of that date, as epoch milliseconds
+     * @throws java.time.format.DateTimeParseException if the date cannot be parsed
+     */
+    private long parseUtcMidnight(String cutoffDate) {
+        return LocalDate.parse(cutoffDate).atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli();
+    }
+
+    /**
+     * Formats a date as ISO 8601 so the front-end can parse it directly.
+     *
+     * @param calendar the date to format, may be null
+     * @return the ISO 8601 representation, or an empty string when the date is null
+     */
+    private String formatIsoDate(Calendar calendar) {
+        if (calendar == null) {
+            return "";
+        }
+
+        Instant instant = calendar.toInstant();
+        return ISO_DATE_FORMAT.format(instant.atZone(calendar.getTimeZone().toZoneId()));
+    }
+
+    /**
+     * @param calendar     the date to test, may be null
+     * @param cutoffMillis the start of the activity window, as epoch milliseconds
+     * @return true when the date falls inside the activity window
+     */
+    private boolean isWithinWindow(Calendar calendar, long cutoffMillis) {
+        return calendar != null && calendar.getTimeInMillis() >= cutoffMillis;
+    }
+
+    /**
+     * @param calendars the dates to compare, null entries ignored
+     * @return the most recent timestamp among the given dates, or 0 when they are all null
+     */
+    private long mostRecentTimestamp(Calendar... calendars) {
+        long mostRecent = 0L;
+        for (Calendar calendar : calendars) {
+            if (calendar != null && calendar.getTimeInMillis() > mostRecent) {
+                mostRecent = calendar.getTimeInMillis();
+            }
+        }
+
+        return mostRecent;
     }
 
     /**
@@ -312,6 +522,8 @@ public class ReportOverview extends BaseReport {
         jsonObject.put("publishedNodes", publishedNodes);
         jsonObject.put("averageTimeToPublish", averageTimeToPublish);
         jsonObject.put("topContributors", topContributors);
+        jsonObject.put("recentActivity", recentActivity);
+        jsonObject.put("recentActivityTotal", recentActivityTotal);
         
         return jsonObject;
     }

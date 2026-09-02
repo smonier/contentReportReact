@@ -138,6 +138,32 @@
       "topContributors": "Principais Contribuidores",
       "items": "itens",
       "noContributorsData": "Nenhum dado de colaborador disponível",
+      "activityTable": {
+        "title": "Registo de atividade detalhado ({{total}} itens)",
+        "capped": "A mostrar os {{shown}} itens mais recentes de {{total}}. Reduza o período ou utilize um relatório dedicado para a lista completa.",
+        "noActivity": "Nenhum conteúdo foi criado, modificado ou publicado nos últimos 30 dias.",
+        "exportCsv": "Exportar CSV",
+        "unknownAuthor": "Desconhecido",
+        "rowsPerPage": "Linhas por página:",
+        "of": "de",
+        "filters": {
+          "created": "Criado",
+          "modified": "Modificado",
+          "published": "Publicado"
+        },
+        "columns": {
+          "name": "Título",
+          "path": "Caminho",
+          "type": "Tipo",
+          "created": "Data de criação",
+          "createdBy": "Criado por",
+          "modified": "Data de modificação",
+          "modifiedBy": "Modificado por",
+          "published": "Última publicação",
+          "publishedBy": "Publicado por",
+          "activity": "Atividade"
+        }
+      },
       "rawJson": "JSON bruto",
       "viewContent": "Visualizar"
     },
