@@ -40,3 +40,10 @@ javascript/client/*
 
 *storybook.log
 storybook-static
+
+# maven-release-plugin scratch (regenerated per release; a stale
+# completedPhase=end-release here makes release:prepare short-circuit)
+release.properties
+pom.xml.releaseBackup
+pom.xml.tag
+pom.xml.next
