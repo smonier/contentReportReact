@@ -148,17 +148,17 @@ public class ReportOverview extends BaseReport {
         this.usersNumber = uList.size();
 
         /* getting the pages count */
-        String pageQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jnt:page] AS item " + descendantOfSite();
+        String pageQueryStr = countOf("jnt:page") + descendantOfSite();
         QueryWrapper q = session.getWorkspace().getQueryManager().createQuery(pageQueryStr, Query.JCR_SQL2);
         this.pagesNumber = (int) q.execute().getRows().nextRow().getValue("count").getLong();
         
         /* getting the jnt:content count */
-        String contentQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jnt:content] AS item " + descendantOfSite();
+        String contentQueryStr = countOf("jnt:content") + descendantOfSite();
         QueryWrapper contentQuery = session.getWorkspace().getQueryManager().createQuery(contentQueryStr, Query.JCR_SQL2);
         this.contentsNumber = (int) contentQuery.execute().getRows().nextRow().getValue("count").getLong();
         
         /* getting the jmix:editorialContent count */
-        String editorialQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jmix:editorialContent] AS item " + descendantOfSite();
+        String editorialQueryStr = countOf(JMIX_EDITORIAL_CONTENT) + descendantOfSite();
         QueryWrapper editorialQuery = session.getWorkspace().getQueryManager().createQuery(editorialQueryStr, Query.JCR_SQL2);
         this.editorialContentsNumber = (int) editorialQuery.execute().getRows().nextRow().getValue("count").getLong();
         
@@ -168,12 +168,12 @@ public class ReportOverview extends BaseReport {
         this.workflowTasksNumber = (int) workflowQuery.execute().getRows().nextRow().getValue("count").getLong();
         
         /* getting the files count (all assets) */
-        String filesQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jnt:file] AS item " + descendantOfSite();
+        String filesQueryStr = countOf("jnt:file") + descendantOfSite();
         QueryWrapper filesQuery = session.getWorkspace().getQueryManager().createQuery(filesQueryStr, Query.JCR_SQL2);
         this.filesNumber = (int) filesQuery.execute().getRows().nextRow().getValue("count").getLong();
         
         /* getting the images count */
-        String imagesQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jmix:image] AS item " + descendantOfSite();
+        String imagesQueryStr = countOf("jmix:image") + descendantOfSite();
         QueryWrapper imagesQuery = session.getWorkspace().getQueryManager().createQuery(imagesQueryStr, Query.JCR_SQL2);
         this.imagesNumber = (int) imagesQuery.execute().getRows().nextRow().getValue("count").getLong();
         
@@ -190,28 +190,28 @@ public class ReportOverview extends BaseReport {
         String thirtyDaysAgo = dateFormat.format(cal.getTime());
         
         /* getting new content in last 30 days */
-        String newContentQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jmix:editorialContent] AS item " +
+        String newContentQueryStr = countOf(JMIX_EDITORIAL_CONTENT) +
                 descendantOfSite() + " " +
                 "AND [jcr:created] >= " + dateLiteral(thirtyDaysAgo);
         QueryWrapper newContentQuery = session.getWorkspace().getQueryManager().createQuery(newContentQueryStr, Query.JCR_SQL2);
         this.newContentLast30Days = (int) newContentQuery.execute().getRows().nextRow().getValue("count").getLong();
         
         /* getting modified content in last 30 days */
-        String modifiedContentQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jmix:editorialContent] AS item " +
+        String modifiedContentQueryStr = countOf(JMIX_EDITORIAL_CONTENT) +
                 descendantOfSite() + " " +
                 "AND [jcr:lastModified] >= " + dateLiteral(thirtyDaysAgo);
         QueryWrapper modifiedContentQuery = session.getWorkspace().getQueryManager().createQuery(modifiedContentQueryStr, Query.JCR_SQL2);
         this.modifiedContentLast30Days = (int) modifiedContentQuery.execute().getRows().nextRow().getValue("count").getLong();
         
         /* getting published content in last 30 days (nodes with j:lastPublished in last 30 days) */
-        String publishedContentQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jmix:lastPublished] AS item " +
+        String publishedContentQueryStr = countOf("jmix:lastPublished") +
                 descendantOfSite() + " " +
                 "AND [j:lastPublished] >= " + dateLiteral(thirtyDaysAgo);
         QueryWrapper publishedContentQuery = session.getWorkspace().getQueryManager().createQuery(publishedContentQueryStr, Query.JCR_SQL2);
         this.publishedContentLast30Days = (int) publishedContentQuery.execute().getRows().nextRow().getValue("count").getLong();
         
         /* getting unpublished vs published nodes count */
-        String publishedNodesQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jmix:editorialContent] AS item " +
+        String publishedNodesQueryStr = countOf(JMIX_EDITORIAL_CONTENT) +
                 descendantOfSite() + " " +
                 "AND [j:published] = true";
         QueryWrapper publishedNodesQuery = session.getWorkspace().getQueryManager().createQuery(publishedNodesQueryStr, Query.JCR_SQL2);
@@ -302,6 +302,14 @@ public class ReportOverview extends BaseReport {
 
         /* Getting the detailed list of content touched in the last 30 days */
         collectRecentActivity(session, thirtyDaysAgo);
+    }
+
+    /**
+     * @param nodeType the node type to count
+     * @return the {@code SELECT} prefix of a JCR-SQL2 count query over that type
+     */
+    private static String countOf(String nodeType) {
+        return "SELECT [rep:count(item,skipChecks=1)] FROM [" + nodeType + "] AS item ";
     }
 
     /**
