@@ -20,6 +20,16 @@ The Content Report React module offers a modern, user-friendly interface for gen
   - Published vs Unpublished nodes comparison
   - Average time from creation to publication
   - Top contributors ranked by content count (with medal badges 🥇🥈🥉)
+  - **Detailed activity log**: a collapsible table listing the content behind those
+    counters — every `jmix:editorialContent` node created, modified or published in the
+    window, with its creation, last-modification and last-publication dates and the user
+    responsible for each. Tags mark which of the three events actually fell inside the
+    window. Sortable on any column, filterable per event type, paginated, exportable to
+    CSV or JSON, and each path links straight into jContent. Capped at the 500 most
+    recently touched items, with the full total reported alongside.
+
+    Rows are read with the caller's own JCR session, so the table only ever lists content
+    the current user is allowed to see.
 
 ### 📝 Content Reports
 - **By Author and Date**: Filter pages or all content by combining author and date range criteria; supports creation vs. modification date toggle
@@ -324,6 +334,22 @@ query {
         topContributors {
           username
           contentCount
+        }
+        # Detailed activity log — capped at 500 rows, most recent first
+        recentActivityTotal
+        recentActivity {
+          name
+          path
+          type
+          created
+          createdBy
+          lastModified
+          lastModifiedBy
+          lastPublished
+          lastPublishedBy
+          isNew
+          isModified
+          isPublished
         }
       }
       rawReport(

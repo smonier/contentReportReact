@@ -1,0 +1,211 @@
+.collapsible {
+    margin-top: 16px;
+    background: #ffffff;
+    border: 1px solid #e1e7f5;
+    border-radius: 6px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+    // Moonstone's Collapsible hardcodes `isUpperCase` on the Typography that
+    // wraps the label, so the label span carries its own text-transform and
+    // font-size. Both must be overridden on the span -- a rule on the parent
+    // button loses to the child's own declarations. The `.collapsible` parent
+    // puts this at specificity 0,3,0 against Moonstone's 0,2,0.
+    :global(.moonstone-collapsible_button .moonstone-typography) {
+        text-transform: none !important;
+        letter-spacing: normal;
+        font-size: 15px;
+        font-weight: 600;
+        color: #1a2332;
+    }
+
+    :global(.moonstone-collapsible_button) {
+        justify-content: flex-start;
+        padding: 12px 16px;
+    }
+}
+
+.body {
+    padding: 16px;
+}
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.filters {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+
+    // Moonstone lays CheckboxItems out as a vertical list, spacing them with a
+    // sibling margin-top. In a horizontal row that margin drops every item
+    // after the first below the baseline, so clear it and let `gap` space them.
+    // The parent class keeps this more specific than Moonstone's own rule.
+    :global(.moonstone-checkboxItem + .moonstone-checkboxItem) {
+        margin-top: 0;
+    }
+
+    :global(.moonstone-checkboxItem) {
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+    }
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.cappedNotice {
+    color: #8b6d00;
+    background-color: #fff8e1;
+    border: 1px solid #ffe08a;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 12px;
+    margin-bottom: 12px;
+}
+
+.table {
+    width: 100%;
+    table-layout: auto;
+
+    :global {
+        td, th {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        tr {
+            height: auto !important;
+            min-height: 48px !important;
+        }
+
+        tbody td {
+            vertical-align: top;
+            height: auto !important;
+            padding: 10px 12px;
+        }
+    }
+}
+
+.sortableHeader {
+    cursor: pointer;
+    user-select: none;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.04);
+    }
+}
+
+.headerContent {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sortIcon {
+    font-size: 10px;
+    color: #5c6f90;
+}
+
+.nameCell {
+    font-weight: 500;
+    max-width: 260px;
+    word-break: break-word;
+}
+
+.pathCell {
+    font-family: monospace;
+    font-size: 12px;
+    max-width: 320px;
+    word-break: break-word;
+}
+
+.pathLink {
+    color: var(--color-primary, #007bff);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
+.typeCell {
+    font-size: 12px;
+    color: #5c6f90;
+    white-space: nowrap;
+}
+
+.eventCell {
+    white-space: nowrap;
+    font-size: 12px;
+}
+
+.eventDate {
+    color: #2c3e5d;
+}
+
+.eventAuthor {
+    display: block;
+    color: #8b9bb3;
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+.highlighted .eventDate {
+    font-weight: 600;
+}
+
+.emptyValue {
+    color: #b8c2d1;
+}
+
+.tags {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.tagNew {
+    background-color: #e6f4ea;
+    color: #22863a;
+}
+
+.tagModified {
+    background-color: #e3effc;
+    color: #0366d6;
+}
+
+.tagPublished {
+    background-color: #f0e9fb;
+    color: #6f42c1;
+}
+
+.noResults {
+    padding: 24px;
+    text-align: center;
+    color: #8b9bb3;
+    font-size: 13px;
+    font-style: italic;
+}

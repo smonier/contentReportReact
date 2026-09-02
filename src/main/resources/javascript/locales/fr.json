@@ -138,6 +138,33 @@
       "topContributors": "Principaux contributeurs",
       "items": "éléments",
       "noContributorsData": "Aucune donnée de contributeur disponible",
+      "activityTable": {
+        "title": "Journal d'activité détaillé ({{total}} éléments)",
+        "capped": "Affichage des {{shown}} éléments les plus récents sur {{total}}. Réduisez la période ou utilisez un rapport dédié pour la liste complète.",
+        "noActivity": "Aucun contenu n'a été créé, modifié ou publié au cours des 30 derniers jours.",
+        "exportCsv": "Exporter en CSV",
+        "exportJson": "Exporter en JSON",
+        "unknownAuthor": "Inconnu",
+        "rowsPerPage": "Lignes par page :",
+        "of": "sur",
+        "filters": {
+          "created": "Créé",
+          "modified": "Modifié",
+          "published": "Publié"
+        },
+        "columns": {
+          "name": "Titre",
+          "path": "Chemin",
+          "type": "Type",
+          "created": "Créé le",
+          "createdBy": "Créé par",
+          "modified": "Modifié le",
+          "modifiedBy": "Modifié par",
+          "published": "Dernière publication",
+          "publishedBy": "Publié par",
+          "activity": "Activité"
+        }
+      },
       "rawJson": "JSON brut",
       "viewContent": "Voir"
     },

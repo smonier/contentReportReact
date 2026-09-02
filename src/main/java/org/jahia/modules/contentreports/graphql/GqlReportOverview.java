@@ -2,6 +2,7 @@ package org.jahia.modules.contentreports.graphql;
 
 import graphql.annotations.annotationTypes.GraphQLDescription;
 import graphql.annotations.annotationTypes.GraphQLField;
+import graphql.annotations.annotationTypes.GraphQLName;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -151,6 +152,119 @@ public class GqlReportOverview {
             }
         }
         return contributors;
+    }
+
+    @GraphQLField
+    @GraphQLDescription("Total number of content items created, modified or published in the last 30 days")
+    public int getRecentActivityTotal() {
+        return payload.optInt("recentActivityTotal");
+    }
+
+    @GraphQLField
+    @GraphQLDescription("Content items created, modified or published in the last 30 days, most recent first (capped at 500)")
+    public List<GqlActivityItem> getRecentActivity() {
+        JSONArray activityArray = payload.optJSONArray("recentActivity");
+        List<GqlActivityItem> activity = new ArrayList<>();
+        if (activityArray != null) {
+            for (int i = 0; i < activityArray.length(); i++) {
+                JSONObject activityObj = activityArray.optJSONObject(i);
+                if (activityObj != null) {
+                    activity.add(new GqlActivityItem(activityObj));
+                }
+            }
+        }
+        return activity;
+    }
+
+    // Inner class for one row of the content activity list
+    @GraphQLDescription("A content item touched within the activity window")
+    public static class GqlActivityItem {
+
+        private final JSONObject item;
+
+        public GqlActivityItem(JSONObject item) {
+            this.item = item;
+        }
+
+        private String optNullableString(String key) {
+            String value = item.optString(key);
+            return value == null || value.isEmpty() ? null : value;
+        }
+
+        @GraphQLField
+        @GraphQLDescription("Displayable name of the content item")
+        public String getName() {
+            return item.optString("name");
+        }
+
+        @GraphQLField
+        @GraphQLDescription("JCR path of the content item")
+        public String getPath() {
+            return item.optString("path");
+        }
+
+        @GraphQLField
+        @GraphQLDescription("Primary node type alias of the content item")
+        public String getType() {
+            return item.optString("type");
+        }
+
+        @GraphQLField
+        @GraphQLDescription("Creation date, ISO 8601")
+        public String getCreated() {
+            return optNullableString("created");
+        }
+
+        @GraphQLField
+        @GraphQLDescription("Username of the author who created the content item")
+        public String getCreatedBy() {
+            return optNullableString("createdBy");
+        }
+
+        @GraphQLField
+        @GraphQLDescription("Last modification date, ISO 8601")
+        public String getLastModified() {
+            return optNullableString("lastModified");
+        }
+
+        @GraphQLField
+        @GraphQLDescription("Username of the author who last modified the content item")
+        public String getLastModifiedBy() {
+            return optNullableString("lastModifiedBy");
+        }
+
+        @GraphQLField
+        @GraphQLDescription("Last publication date, ISO 8601, null when never published")
+        public String getLastPublished() {
+            return optNullableString("lastPublished");
+        }
+
+        @GraphQLField
+        @GraphQLDescription("Username of the author who last published the content item")
+        public String getLastPublishedBy() {
+            return optNullableString("lastPublishedBy");
+        }
+
+        @GraphQLField
+        @GraphQLName("isNew")
+        @GraphQLDescription("True when the content item was created within the activity window")
+        public boolean isNew() {
+            return item.optBoolean("isNew");
+        }
+
+        @GraphQLField
+        @GraphQLName("isModified")
+        @GraphQLDescription("True when the content item was modified within the activity window")
+        public boolean isModified() {
+            return item.optBoolean("isModified");
+        }
+
+        @GraphQLField
+        @GraphQLName("isPublished")
+        @GraphQLDescription("True when the content item was published within the activity window")
+        public boolean isPublished() {
+            return item.optBoolean("isPublished");
+        }
     }
 
     // Inner class for contributor data

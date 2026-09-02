@@ -138,6 +138,33 @@
       "topContributors": "Top-Mitwirkende",
       "items": "Elemente",
       "noContributorsData": "Keine Mitwirkendendaten verfügbar",
+      "activityTable": {
+        "title": "Detailliertes Aktivitätsprotokoll ({{total}} Einträge)",
+        "capped": "Es werden die {{shown}} neuesten von {{total}} Einträgen angezeigt. Grenzen Sie den Zeitraum ein oder verwenden Sie einen speziellen Bericht für die vollständige Liste.",
+        "noActivity": "In den letzten 30 Tagen wurden keine Inhalte erstellt, geändert oder veröffentlicht.",
+        "exportCsv": "CSV exportieren",
+        "exportJson": "JSON exportieren",
+        "unknownAuthor": "Unbekannt",
+        "rowsPerPage": "Zeilen pro Seite:",
+        "of": "von",
+        "filters": {
+          "created": "Erstellt",
+          "modified": "Geändert",
+          "published": "Veröffentlicht"
+        },
+        "columns": {
+          "name": "Titel",
+          "path": "Pfad",
+          "type": "Typ",
+          "created": "Erstellt am",
+          "createdBy": "Erstellt von",
+          "modified": "Geändert am",
+          "modifiedBy": "Geändert von",
+          "published": "Zuletzt veröffentlicht",
+          "publishedBy": "Veröffentlicht von",
+          "activity": "Aktivität"
+        }
+      },
       "rawJson": "Rohes JSON",
       "viewContent": "Anzeigen"
     },

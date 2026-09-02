@@ -25,6 +25,21 @@ export const OVERVIEW_QUERY = `
                         username
                         contentCount
                     }
+                    recentActivityTotal
+                    recentActivity {
+                        name
+                        path
+                        type
+                        created
+                        createdBy
+                        lastModified
+                        lastModifiedBy
+                        lastPublished
+                        lastPublishedBy
+                        isNew
+                        isModified
+                        isPublished
+                    }
                 }
             }
         }
