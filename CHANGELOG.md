@@ -10,6 +10,8 @@ This file starts at the change below. For releases before it, see the
 
 ## [Unreleased]
 
+## [2.0.2] - 2026-09-02
+
 ### Added
 
 - **Site overview — detailed content activity log.** The Content Activity block showed
@@ -51,7 +53,8 @@ This file starts at the change below. For releases before it, see the
 
 ## [1.1.0] - 2026-04-29
 
-[Unreleased]: https://github.com/Jahia/contentReportReact/compare/content-reports-react-2.0.1...HEAD
+[Unreleased]: https://github.com/Jahia/contentReportReact/compare/content-reports-react-2.0.2...HEAD
+[2.0.2]: https://github.com/Jahia/contentReportReact/compare/content-reports-react-2.0.1...content-reports-react-2.0.2
 [2.0.1]: https://github.com/Jahia/contentReportReact/compare/content-reports-react-2.0.0...content-reports-react-2.0.1
 [2.0.0]: https://github.com/Jahia/contentReportReact/compare/contentReportReact-1.1.0...content-reports-react-2.0.0
 [1.1.0]: https://github.com/Jahia/contentReportReact/releases/tag/contentReportReact-1.1.0
