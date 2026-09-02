@@ -78,6 +78,8 @@ public class ReportOverview extends BaseReport {
     private static final String JMIX_EDITORIAL_CONTENT = "jmix:editorialContent";
     /** Upper bound on the number of detailed activity rows returned, to keep the payload reasonable. */
     private static final int MAX_ACTIVITY_ITEMS = 500;
+    /** Key of the internal sort field carrying each row's most recent activity. */
+    private static final String LAST_ACTIVITY_TIMESTAMP = "lastActivityTimestamp";
     /** ISO 8601 formatter, parseable by {@code new Date(...)} on the front-end. Immutable, so shared. */
     private static final DateTimeFormatter ISO_DATE_FORMAT = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
@@ -146,17 +148,17 @@ public class ReportOverview extends BaseReport {
         this.usersNumber = uList.size();
 
         /* getting the pages count */
-        String pageQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jnt:page] AS item WHERE ISDESCENDANTNODE(item,['" + siteNode.getPath() + "'])";
+        String pageQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jnt:page] AS item " + descendantOfSite();
         QueryWrapper q = session.getWorkspace().getQueryManager().createQuery(pageQueryStr, Query.JCR_SQL2);
         this.pagesNumber = (int) q.execute().getRows().nextRow().getValue("count").getLong();
         
         /* getting the jnt:content count */
-        String contentQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jnt:content] AS item WHERE ISDESCENDANTNODE(item,['" + siteNode.getPath() + "'])";
+        String contentQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jnt:content] AS item " + descendantOfSite();
         QueryWrapper contentQuery = session.getWorkspace().getQueryManager().createQuery(contentQueryStr, Query.JCR_SQL2);
         this.contentsNumber = (int) contentQuery.execute().getRows().nextRow().getValue("count").getLong();
         
         /* getting the jmix:editorialContent count */
-        String editorialQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jmix:editorialContent] AS item WHERE ISDESCENDANTNODE(item,['" + siteNode.getPath() + "'])";
+        String editorialQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jmix:editorialContent] AS item " + descendantOfSite();
         QueryWrapper editorialQuery = session.getWorkspace().getQueryManager().createQuery(editorialQueryStr, Query.JCR_SQL2);
         this.editorialContentsNumber = (int) editorialQuery.execute().getRows().nextRow().getValue("count").getLong();
         
@@ -166,12 +168,12 @@ public class ReportOverview extends BaseReport {
         this.workflowTasksNumber = (int) workflowQuery.execute().getRows().nextRow().getValue("count").getLong();
         
         /* getting the files count (all assets) */
-        String filesQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jnt:file] AS item WHERE ISDESCENDANTNODE(item,['" + siteNode.getPath() + "'])";
+        String filesQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jnt:file] AS item " + descendantOfSite();
         QueryWrapper filesQuery = session.getWorkspace().getQueryManager().createQuery(filesQueryStr, Query.JCR_SQL2);
         this.filesNumber = (int) filesQuery.execute().getRows().nextRow().getValue("count").getLong();
         
         /* getting the images count */
-        String imagesQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jmix:image] AS item WHERE ISDESCENDANTNODE(item,['" + siteNode.getPath() + "'])";
+        String imagesQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jmix:image] AS item " + descendantOfSite();
         QueryWrapper imagesQuery = session.getWorkspace().getQueryManager().createQuery(imagesQueryStr, Query.JCR_SQL2);
         this.imagesNumber = (int) imagesQuery.execute().getRows().nextRow().getValue("count").getLong();
         
@@ -189,28 +191,28 @@ public class ReportOverview extends BaseReport {
         
         /* getting new content in last 30 days */
         String newContentQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jmix:editorialContent] AS item " +
-                "WHERE ISDESCENDANTNODE(item,['" + siteNode.getPath() + "']) " +
-                "AND [jcr:created] >= CAST('" + thirtyDaysAgo + "T00:00:00.000Z' AS DATE)";
+                descendantOfSite() + " " +
+                "AND [jcr:created] >= " + dateLiteral(thirtyDaysAgo);
         QueryWrapper newContentQuery = session.getWorkspace().getQueryManager().createQuery(newContentQueryStr, Query.JCR_SQL2);
         this.newContentLast30Days = (int) newContentQuery.execute().getRows().nextRow().getValue("count").getLong();
         
         /* getting modified content in last 30 days */
         String modifiedContentQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jmix:editorialContent] AS item " +
-                "WHERE ISDESCENDANTNODE(item,['" + siteNode.getPath() + "']) " +
-                "AND [jcr:lastModified] >= CAST('" + thirtyDaysAgo + "T00:00:00.000Z' AS DATE)";
+                descendantOfSite() + " " +
+                "AND [jcr:lastModified] >= " + dateLiteral(thirtyDaysAgo);
         QueryWrapper modifiedContentQuery = session.getWorkspace().getQueryManager().createQuery(modifiedContentQueryStr, Query.JCR_SQL2);
         this.modifiedContentLast30Days = (int) modifiedContentQuery.execute().getRows().nextRow().getValue("count").getLong();
         
         /* getting published content in last 30 days (nodes with j:lastPublished in last 30 days) */
         String publishedContentQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jmix:lastPublished] AS item " +
-                "WHERE ISDESCENDANTNODE(item,['" + siteNode.getPath() + "']) " +
-                "AND [j:lastPublished] >= CAST('" + thirtyDaysAgo + "T00:00:00.000Z' AS DATE)";
+                descendantOfSite() + " " +
+                "AND [j:lastPublished] >= " + dateLiteral(thirtyDaysAgo);
         QueryWrapper publishedContentQuery = session.getWorkspace().getQueryManager().createQuery(publishedContentQueryStr, Query.JCR_SQL2);
         this.publishedContentLast30Days = (int) publishedContentQuery.execute().getRows().nextRow().getValue("count").getLong();
         
         /* getting unpublished vs published nodes count */
         String publishedNodesQueryStr = "SELECT [rep:count(item,skipChecks=1)] FROM [jmix:editorialContent] AS item " +
-                "WHERE ISDESCENDANTNODE(item,['" + siteNode.getPath() + "']) " +
+                descendantOfSite() + " " +
                 "AND [j:published] = true";
         QueryWrapper publishedNodesQuery = session.getWorkspace().getQueryManager().createQuery(publishedNodesQueryStr, Query.JCR_SQL2);
         this.publishedNodes = (int) publishedNodesQuery.execute().getRows().nextRow().getValue("count").getLong();
@@ -222,7 +224,7 @@ public class ReportOverview extends BaseReport {
         try {
             String avgTimeQueryStr = "SELECT item.[jcr:created] AS created, item.[j:lastPublished] AS published " +
                     "FROM [jmix:lastPublished] AS item " +
-                    "WHERE ISDESCENDANTNODE(item,['" + siteNode.getPath() + "']) " +
+                    descendantOfSite() + " " +
                     "AND item.[j:lastPublished] is not null " +
                     "AND item.[jcr:created] is not null";
             QueryWrapper avgTimeQuery = session.getWorkspace().getQueryManager().createQuery(avgTimeQueryStr, Query.JCR_SQL2);
@@ -259,7 +261,7 @@ public class ReportOverview extends BaseReport {
             // Query all editorial content and aggregate by author manually
             String topContributorsQueryStr = "SELECT item.[jcr:createdBy] AS author " +
                     "FROM [jmix:editorialContent] AS item " +
-                    "WHERE ISDESCENDANTNODE(item,['" + siteNode.getPath() + "'])";
+                    descendantOfSite();
             QueryWrapper topContributorsQuery = session.getWorkspace().getQueryManager().createQuery(topContributorsQueryStr, Query.JCR_SQL2);
             javax.jcr.query.RowIterator rows = topContributorsQuery.execute().getRows();
             
@@ -303,6 +305,21 @@ public class ReportOverview extends BaseReport {
     }
 
     /**
+     * @return the {@code WHERE} clause restricting a query to descendants of this report's site
+     */
+    private String descendantOfSite() {
+        return "WHERE ISDESCENDANTNODE(item,['" + siteNode.getPath() + "'])";
+    }
+
+    /**
+     * @param isoDay a {@code yyyy-MM-dd} day
+     * @return a JCR-SQL2 date literal for midnight UTC on that day
+     */
+    private static String dateLiteral(String isoDay) {
+        return "CAST('" + isoDay + "T00:00:00.000Z' AS DATE)";
+    }
+
+    /**
      * Builds the detailed list of editorial content created, modified or published within the activity window.
      *
      * Two queries are needed because publishing a node updates neither {@code jcr:created} nor
@@ -314,26 +331,26 @@ public class ReportOverview extends BaseReport {
      */
     private void collectRecentActivity(JCRSessionWrapper session, String cutoffDate) {
         try {
-            String cutoffLiteral = "CAST('" + cutoffDate + "T00:00:00.000Z' AS DATE)";
+            String cutoffLiteral = dateLiteral(cutoffDate);
             // Same instant as the literal above, so the per-row flags agree with what the queries selected.
             long cutoffMillis = parseUtcMidnight(cutoffDate);
             Map<String, Map<String, Object>> activityMap = new LinkedHashMap<>();
 
             String createdOrModifiedQueryStr = "SELECT * FROM [" + JMIX_EDITORIAL_CONTENT + "] AS item " +
-                    "WHERE ISDESCENDANTNODE(item,['" + siteNode.getPath() + "']) " +
+                    descendantOfSite() + " " +
                     "AND (item.[jcr:created] >= " + cutoffLiteral + " " +
                     "OR item.[jcr:lastModified] >= " + cutoffLiteral + ")";
             collectActivityItems(session, createdOrModifiedQueryStr, cutoffMillis, activityMap, false);
 
             String publishedQueryStr = "SELECT * FROM [jmix:lastPublished] AS item " +
-                    "WHERE ISDESCENDANTNODE(item,['" + siteNode.getPath() + "']) " +
+                    descendantOfSite() + " " +
                     "AND item.[j:lastPublished] >= " + cutoffLiteral;
             collectActivityItems(session, publishedQueryStr, cutoffMillis, activityMap, true);
 
             List<Map<String, Object>> activityList = new ArrayList<>(activityMap.values());
             activityList.sort((left, right) -> Long.compare(
-                    (Long) right.get("lastActivityTimestamp"),
-                    (Long) left.get("lastActivityTimestamp")));
+                    (Long) right.get(LAST_ACTIVITY_TIMESTAMP),
+                    (Long) left.get(LAST_ACTIVITY_TIMESTAMP)));
 
             this.recentActivityTotal = activityList.size();
             this.recentActivity = activityList.size() > MAX_ACTIVITY_ITEMS ?
@@ -408,7 +425,7 @@ public class ReportOverview extends BaseReport {
         item.put("isNew", isWithinWindow(created, cutoffMillis));
         item.put("isModified", isWithinWindow(modified, cutoffMillis));
         item.put("isPublished", isWithinWindow(published, cutoffMillis));
-        item.put("lastActivityTimestamp", mostRecentTimestamp(created, modified, published));
+        item.put(LAST_ACTIVITY_TIMESTAMP, mostRecentTimestamp(created, modified, published));
         return item;
     }
 
