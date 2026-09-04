@@ -24,6 +24,42 @@ const formatDate = dateString => {
     }
 };
 
+const formatNumber = value => (value === null || value === undefined || value === '' ? '-' : String(value));
+
+const toBooleanFlag = value => (value === true || value === 'true' || value === 'True' || value === '1' ? 1 : 0);
+
+const compareStrings = (a, b) => String(a).toLowerCase().localeCompare(String(b).toLowerCase());
+
+// Ascending comparators; the caller flips the sign for descending order.
+const SORT_COMPARATORS = {
+    number: (a, b) => {
+        const delta = Number(a) - Number(b);
+
+        return Number.isNaN(delta) ? compareStrings(a, b) : delta;
+    },
+    date: (a, b) => new Date(a) - new Date(b),
+    boolean: (a, b) => toBooleanFlag(a) - toBooleanFlag(b),
+    string: compareStrings
+};
+
+// A column that declares its type sorts by that type. Untyped columns keep the legacy
+// positional guess (3/4 dates, 5/6 booleans) so older reports sort exactly as before.
+const resolveSortKind = (declaredType, columnIndex) => {
+    if (declaredType && SORT_COMPARATORS[declaredType]) {
+        return declaredType;
+    }
+
+    if (!declaredType && (columnIndex === 3 || columnIndex === 4)) {
+        return 'date';
+    }
+
+    if (!declaredType && (columnIndex === 5 || columnIndex === 6)) {
+        return 'boolean';
+    }
+
+    return 'string';
+};
+
 const renderBooleanValue = value => {
     const isTrue = value === true || value === 'true' || value === 'True' || value === '1';
     const isFalse = value === false || value === 'false' || value === 'False' || value === '0';
@@ -288,6 +324,11 @@ const ReportResultsTable = ({data, siteKey, language, columns, reportId, reportT
             return formatDate(value);
         }
 
+        if (columnType === 'number') {
+            // 0 is a real value here; the generic `value || '-'` fallback below would swallow it
+            return formatNumber(value);
+        }
+
         if (columnType === 'icon') {
             const Icon = getMimeIconComponent(value);
             return (
@@ -381,7 +422,7 @@ const ReportResultsTable = ({data, siteKey, language, columns, reportId, reportT
 
     // Helper function to compare values for sorting
     const compareValues = useCallback((aVal, bVal, columnIndex) => {
-        // Handle null/undefined values
+        // Missing values always sink to the bottom, whatever the direction
         if (aVal === null || aVal === undefined) {
             return 1;
         }
@@ -390,27 +431,11 @@ const ReportResultsTable = ({data, siteKey, language, columns, reportId, reportT
             return -1;
         }
 
-        // For dates (columns 3, 4: created, modified)
-        if (columnIndex === 3 || columnIndex === 4) {
-            const aDate = new Date(aVal);
-            const bDate = new Date(bVal);
-            return sortDirection === 'asc' ? aDate - bDate : bDate - aDate;
-        }
+        const declaredType = useCustomColumns && effectiveColumns ? effectiveColumns[columnIndex]?.type : undefined;
+        const ascending = SORT_COMPARATORS[resolveSortKind(declaredType, columnIndex)](aVal, bVal);
 
-        // For booleans (columns 5, 6: published, locked)
-        if (columnIndex === 5 || columnIndex === 6) {
-            const aBool = aVal === true || aVal === 'true' || aVal === 'True' || aVal === '1';
-            const bBool = bVal === true || bVal === 'true' || bVal === 'True' || bVal === '1';
-            const aNum = aBool ? 1 : 0;
-            const bNum = bBool ? 1 : 0;
-            return sortDirection === 'asc' ? aNum - bNum : bNum - aNum;
-        }
-
-        // For strings (title, path, type)
-        const aStr = String(aVal).toLowerCase();
-        const bStr = String(bVal).toLowerCase();
-        return sortDirection === 'asc' ? aStr.localeCompare(bStr) : bStr.localeCompare(aStr);
-    }, [sortDirection]);
+        return sortDirection === 'asc' ? ascending : -ascending;
+    }, [sortDirection, useCustomColumns, effectiveColumns]);
 
     // Sort data
     const sortedData = useMemo(() => {

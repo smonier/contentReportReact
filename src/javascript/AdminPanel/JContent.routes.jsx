@@ -267,6 +267,26 @@ export const registerJContentRoutes = () => {
         render: createReportRender('19')
     });
 
+    // Modules deployed on site
+    registry.add('adminRoute', 'contentReportReact-system-siteModules', {
+        targets: ['jcontent-contentReportReact-system'],
+        isSelectable: true,
+        label: 'contentReportReact:menu.siteModules',
+        requireModuleInstalledOnSite: MODULE_KEY,
+
+        render: createReportRender('29')
+    });
+
+    // Component usage per module
+    registry.add('adminRoute', 'contentReportReact-system-componentUsage', {
+        targets: ['jcontent-contentReportReact-system'],
+        isSelectable: true,
+        label: 'contentReportReact:menu.componentUsage',
+        requireModuleInstalledOnSite: MODULE_KEY,
+
+        render: createReportRender('30')
+    });
+
     // System Overview
     registry.add('adminRoute', 'contentReportReact-system-overview', {
         targets: ['jcontent-contentReportReact-system'],

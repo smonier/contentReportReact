@@ -26,6 +26,8 @@ import org.jahia.modules.contentreports.bean.ReportLiveContents;
 import org.jahia.modules.contentreports.bean.ReportLockedContent;
 import org.jahia.modules.contentreports.bean.ReportOrphanContent;
 import org.jahia.modules.contentreports.bean.ReportOverview;
+import org.jahia.modules.contentreports.bean.ReportSiteModules;
+import org.jahia.modules.contentreports.bean.ReportComponentUsage;
 import org.jahia.modules.contentreports.bean.ReportPagesWithoutDescription;
 import org.jahia.modules.contentreports.bean.ReportPagesWithoutKeyword;
 import org.jahia.modules.contentreports.bean.ReportPagesWithoutTitle;
@@ -164,6 +166,10 @@ public final class ContentReportFactory {
                         siteNode,
                         cleanPath(params.get("assetsRootPath"))
                 );
+            case "29":
+                return new ReportSiteModules(siteNode);
+            case "30":
+                return new ReportComponentUsage(siteNode);
             default:
                 throw new ContentReportException("Invalid reportId: " + reportId);
         }

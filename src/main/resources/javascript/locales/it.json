@@ -32,6 +32,8 @@
       "contentWaitingPublication": "Istanze di flusso di lavoro",
       "customCacheContent": "Contenuto cache personalizzato",
       "aclInheritanceBreak": "Interruzione ereditarietà ACL",
+      "siteModules": "Moduli distribuiti sul sito",
+      "componentUsage": "Utilizzo dei componenti",
       "byAuthorAndDate": "Per autore e data",
       "pagesUntranslated": "Contenuto non tradotto",
       "references": "Riferimenti",
@@ -54,6 +56,8 @@
       "lockedContent": "Visualizza tutti i contenuti attualmente bloccati dagli utenti. Questo report mostra chi ha creato il contenuto, chi lo ha bloccato e dove si trova. Utile per identificare i contenuti che potrebbero dover essere sbloccati.",
       "customCacheContent": "Visualizza i contenuti con impostazioni di scadenza cache personalizzate. Questo report identifica i contenuti che hanno una configurazione cache specifica applicata, mostrando i valori di scadenza e aiutando a ottimizzare le prestazioni della cache.",
       "aclInheritanceBreak": "Identifica i contenuti in cui è stata interrotta l'ereditarietà ACL (Access Control List). Questo report mostra i nodi che hanno autorizzazioni personalizzate impostate, sostituendo le autorizzazioni dai nodi padre. Utile per verificare le configurazioni di sicurezza.",
+      "siteModules": "Elenca tutti i moduli distribuiti sul sito selezionato con versione, tipo, stato del bundle e origine: il set di template del sito, un modulo installato sul sito o una dipendenza trascinata da uno di essi. L’ultima colonna conta i tipi di componenti dichiarati da ogni modulo.",
+      "componentUsage": "Per ogni modulo distribuito sul sito, elenca i tipi di componenti che dichiara e quanti nodi esattamente di quel tipo esistono sotto il sito. Anche i componenti senza istanze sono elencati; ordina la colonna Utilizzo in modo crescente per portarli in alto.",
       "pagesWithoutTitle": "Identifica le pagine a cui mancano i titoli in una o più lingue. Il report mostra il percorso e indica quali lingue hanno titoli definiti.",
       "pagesUntranslated": "Identifica i contenuti che non sono stati tradotti in una lingua specifica. Seleziona la lingua di destinazione per trovare contenuti che esistono in altre lingue ma mancano della traduzione.",
       "liveContents": "Visualizza i contenuti con condizioni di visibilità dal vivo. Questo report mostra i contenuti che hanno regole di visibilità condizionale applicate, mostrando le condizioni, lo stato di corrispondenza e lo stato di visibilità corrente.",
@@ -297,6 +301,26 @@
         "columns": {
           "title": "Titolo",
           "path": "Percorso"
+        }
+      },
+      "siteModules": {
+        "columns": {
+          "id": "ID modulo",
+          "name": "Nome",
+          "version": "Versione",
+          "type": "Tipo",
+          "dependency": "Distribuito come",
+          "state": "Stato",
+          "components": "Tipi di componenti"
+        }
+      },
+      "componentUsage": {
+        "columns": {
+          "module": "ID modulo",
+          "moduleName": "Modulo",
+          "component": "Tipo di componente",
+          "label": "Etichetta",
+          "usage": "Utilizzo"
         }
       }
     },
