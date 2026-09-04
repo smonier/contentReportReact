@@ -69,6 +69,8 @@ The Content Report React module offers a modern, user-friendly interface for gen
 - **Locked Content**: All content currently locked by users, showing creator, lock holder, and location
 - **Custom Cache Content**: Content with custom cache expiration settings, showing expiration values to help optimize cache performance
 - **ACL Inheritance Break**: Nodes where ACL inheritance has been broken (custom permissions overriding parent), useful for security auditing
+- **Modules deployed on site**: Every module deployed on the site with its version, type, bundle state and how it got there (template set, installed on the site, or transitive dependency), plus the number of component types each one declares
+- **Component usage**: For each deployed module, every component type it declares and how many nodes of exactly that type exist under the site — zero-usage components included, so unused components are easy to find (sort the usage column ascending)
 
 ## Requirements
 

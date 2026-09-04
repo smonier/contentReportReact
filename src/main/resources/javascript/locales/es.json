@@ -32,6 +32,8 @@
       "contentWaitingPublication": "Instancias de flujo de trabajo",
       "customCacheContent": "Contenido de caché personalizado",
       "aclInheritanceBreak": "Ruptura de herencia de ACL",
+      "siteModules": "Módulos desplegados en el sitio",
+      "componentUsage": "Uso de componentes",
       "byAuthorAndDate": "Por autor y fecha",
       "pagesUntranslated": "Contenido sin traducir",
       "references": "Referencias",
@@ -54,6 +56,8 @@
       "lockedContent": "Vea todo el contenido que está actualmente bloqueado por los usuarios. Este informe muestra quién creó el contenido, quién lo tiene bloqueado y dónde se encuentra. Útil para identificar contenido que puede necesitar ser desbloqueado.",
       "customCacheContent": "Vea el contenido con configuraciones de caducidad de caché personalizadas. Este informe identifica el contenido que tiene una configuración de caché específica aplicada, mostrando los valores de caducidad y ayudando a optimizar el rendimiento de la caché.",
       "aclInheritanceBreak": "Identifique el contenido donde se ha roto la herencia de ACL (Lista de Control de Acceso). Este informe muestra los nodos que tienen permisos personalizados establecidos, anulando los permisos de los nodos principales. Útil para auditar configuraciones de seguridad.",
+      "siteModules": "Lista todos los módulos desplegados en el sitio seleccionado con su versión, tipo, estado del bundle y origen: el conjunto de plantillas del sitio, un módulo instalado en el sitio o una dependencia arrastrada por uno de ellos. La última columna cuenta los tipos de componentes que declara cada módulo.",
+      "componentUsage": "Para cada módulo desplegado en el sitio, lista los tipos de componentes que declara y cuántos nodos de exactamente ese tipo existen bajo el sitio. Los componentes sin instancias también se listan; ordene la columna Uso de forma ascendente para verlos primero.",
       "pagesWithoutTitle": "Identifique las páginas a las que les faltan títulos en uno o más idiomas. El informe muestra la ruta e indica qué idiomas tienen títulos definidos.",
       "pagesUntranslated": "Identifique el contenido que no ha sido traducido a un idioma específico. Seleccione el idioma de destino para encontrar contenido que existe en otros idiomas pero falta la traducción.",
       "liveContents": "Vea el contenido con condiciones de visibilidad en vivo. Este informe muestra el contenido que tiene reglas de visibilidad condicional aplicadas, mostrando las condiciones, el estado de coincidencia y el estado de visibilidad actual.",
@@ -297,6 +301,26 @@
         "columns": {
           "title": "Título",
           "path": "Ruta"
+        }
+      },
+      "siteModules": {
+        "columns": {
+          "id": "ID del módulo",
+          "name": "Nombre",
+          "version": "Versión",
+          "type": "Tipo",
+          "dependency": "Desplegado como",
+          "state": "Estado",
+          "components": "Tipos de componentes"
+        }
+      },
+      "componentUsage": {
+        "columns": {
+          "module": "ID del módulo",
+          "moduleName": "Módulo",
+          "component": "Tipo de componente",
+          "label": "Etiqueta",
+          "usage": "Uso"
         }
       }
     },

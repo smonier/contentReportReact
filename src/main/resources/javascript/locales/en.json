@@ -32,6 +32,8 @@
       "contentWaitingPublication": "Workflow instances",
       "customCacheContent": "Custom cache content",
       "aclInheritanceBreak": "ACL inheritance break",
+      "siteModules": "Modules deployed on site",
+      "componentUsage": "Component usage",
       "byAuthorAndDate": "By author and date",
       "pagesUntranslated": "Untranslated content",
       "references": "References",
@@ -55,6 +57,8 @@
       "lockedContent": "View all content that is currently locked by users. This report displays who created the content, who has it locked, and where it's located. Useful for identifying content that may need to be unlocked.",
       "customCacheContent": "View content with custom cache expiration settings. This report identifies content that has specific cache configuration applied, showing the expiration values and helping optimize cache performance.",
       "aclInheritanceBreak": "Identify content where ACL (Access Control List) inheritance has been broken. This report shows nodes that have custom permissions set, overriding permissions from parent nodes. Useful for auditing security configurations.",
+      "siteModules": "List every module deployed on the selected site with its version, type, bundle state and how it got there: the site's template set, a module installed on the site, or a dependency pulled in by one of those. The last column counts the component types each module declares.",
+      "componentUsage": "For each module deployed on the site, list the component types it declares and how many nodes of exactly that type exist under the site. Components with zero instances are listed too; sort the usage column ascending to bring them to the top.",
       "pagesWithoutTitle": "Identify pages that are missing titles in one or more languages. The report displays the path and shows which languages have titles defined.",
       "pagesUntranslated": "Identify content that has not been translated into a specific language. Select the target language to find content that exists in other languages but is missing the translation.",
       "liveContents": "View content with live visibility conditions. This report displays content that has conditional visibility rules applied, showing the conditions, matching status, and current visibility state.",
@@ -298,6 +302,26 @@
         "columns": {
           "title": "Title",
           "path": "Path"
+        }
+      },
+      "siteModules": {
+        "columns": {
+          "id": "Module ID",
+          "name": "Name",
+          "version": "Version",
+          "type": "Type",
+          "dependency": "Deployed as",
+          "state": "State",
+          "components": "Component types"
+        }
+      },
+      "componentUsage": {
+        "columns": {
+          "module": "Module ID",
+          "moduleName": "Module",
+          "component": "Component type",
+          "label": "Label",
+          "usage": "Usage"
         }
       }
     },

@@ -32,6 +32,8 @@
       "contentWaitingPublication": "Workflows",
       "customCacheContent": "Cache personnalisé",
       "aclInheritanceBreak": "Rupture d'héritage ACL",
+      "siteModules": "Modules déployés sur le site",
+      "componentUsage": "Utilisation des composants",
       "byAuthorAndDate": "Par auteur et date",
       "pagesUntranslated": "Contenus non traduits",
       "references": "Références",
@@ -54,6 +56,8 @@
       "lockedContent": "Afficher tous les contenus actuellement verrouillés par des utilisateurs. Ce rapport indique qui a créé le contenu, qui l'a verrouillé et où il se trouve. Utile pour identifier les contenus qui doivent être déverrouillés.",
       "customCacheContent": "Afficher le contenu avec des paramètres d'expiration de cache personnalisés. Ce rapport identifie le contenu ayant une configuration de cache spécifique appliquée, affichant les valeurs d'expiration et aidant à optimiser les performances du cache.",
       "aclInheritanceBreak": "Identifier le contenu où l'héritage des ACL (Liste de Contrôle d'Accès) a été rompu. Ce rapport affiche les nœuds ayant des permissions personnalisées définies, remplaçant les permissions des nœuds parents. Utile pour auditer les configurations de sécurité.",
+      "siteModules": "Liste tous les modules déployés sur le site sélectionné avec leur version, leur type, l'état du bundle et leur origine : jeu de templates du site, module installé sur le site ou dépendance entraînée par l'un d'eux. La dernière colonne compte les types de composants déclarés par chaque module.",
+      "componentUsage": "Pour chaque module déployé sur le site, liste les types de composants qu'il déclare et le nombre de nœuds de ce type exact présents sous le site. Les composants sans aucune instance sont également listés ; triez la colonne Utilisation par ordre croissant pour les faire remonter.",
       "pagesWithoutTitle": "Identifier les pages auxquelles il manque des titres dans une ou plusieurs langues. Le rapport affiche le chemin et indique quelles langues ont des titres définis.",
       "pagesUntranslated": "Identifier le contenu qui n'a pas été traduit dans une langue spécifique. Sélectionnez la langue cible pour trouver le contenu existant dans d'autres langues mais dont la traduction est manquante.",
       "liveContents": "Afficher le contenu avec des conditions de visibilité en ligne. Ce rapport affiche le contenu ayant des règles de visibilité conditionnelles appliquées, montrant les conditions, l'état de correspondance et l'état de visibilité actuel.",
@@ -297,6 +301,26 @@
         "columns": {
           "title": "Titre",
           "path": "Chemin"
+        }
+      },
+      "siteModules": {
+        "columns": {
+          "id": "Identifiant du module",
+          "name": "Nom",
+          "version": "Version",
+          "type": "Type",
+          "dependency": "Déployé en tant que",
+          "state": "État",
+          "components": "Types de composants"
+        }
+      },
+      "componentUsage": {
+        "columns": {
+          "module": "Identifiant du module",
+          "moduleName": "Module",
+          "component": "Type de composant",
+          "label": "Libellé",
+          "usage": "Utilisation"
         }
       }
     },

@@ -10,6 +10,23 @@ This file starts at the change below. For releases before it, see the
 
 ## [Unreleased]
 
+### Added
+
+- **Modules deployed on site** (System category). One row per module deployed on the selected
+  site: id, name, version, module type, bundle state, how it is deployed — the site's template
+  set, a module installed on the site, or a dependency pulled in transitively — and how many
+  component types it declares.
+
+- **Component usage** (System category). For every deployed module, each component type it
+  declares and how many nodes of exactly that primary type exist under the site. Components
+  with zero instances are listed too; that is the point of the report. Counts run on the
+  caller's session, so JCR ACLs apply.
+
+- Report tables now honour a column's declared `type` when sorting (`number`, `date`,
+  `boolean`), and render numeric `0` as `0` rather than as an empty cell. Columns without a
+  declared type keep the previous positional behaviour, so existing reports sort exactly as
+  before.
+
 ## [2.0.2] - 2026-09-02
 
 ### Added

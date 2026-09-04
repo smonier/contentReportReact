@@ -32,6 +32,8 @@
       "contentWaitingPublication": "Workflow-Instanzen",
       "customCacheContent": "Benutzerdefinierter Cache-Inhalt",
       "aclInheritanceBreak": "ACL-Vererbungsunterbrechung",
+      "siteModules": "Auf der Site bereitgestellte Module",
+      "componentUsage": "Komponentennutzung",
       "byAuthorAndDate": "Nach Autor und Datum",
       "pagesUntranslated": "Nicht übersetzter Inhalt",
       "references": "Referenzen",
@@ -54,6 +56,8 @@
       "lockedContent": "Alle derzeit von Benutzern gesperrten Inhalte anzeigen. Dieser Bericht zeigt, wer den Inhalt erstellt hat, wer ihn gesperrt hat und wo er sich befindet. Nützlich zur Identifizierung von Inhalten, die möglicherweise entsperrt werden müssen.",
       "customCacheContent": "Inhalte mit benutzerdefinierten Cache-Ablaufeinstellungen anzeigen. Dieser Bericht identifiziert Inhalte mit spezifischer Cache-Konfiguration und zeigt die Ablaufwerte an, um die Cache-Leistung zu optimieren.",
       "aclInheritanceBreak": "Inhalte identifizieren, bei denen die ACL-Vererbung (Zugriffssteuerungsliste) unterbrochen wurde. Dieser Bericht zeigt Knoten mit benutzerdefinierten Berechtigungen, die Berechtigungen von übergeordneten Knoten überschreiben. Nützlich für die Überprüfung von Sicherheitskonfigurationen.",
+      "siteModules": "Listet alle auf der ausgewählten Site bereitgestellten Module mit Version, Typ, Bundle-Status und Herkunft auf: Template-Set der Site, auf der Site installiertes Modul oder von einem dieser Module mitgezogene Abhängigkeit. Die letzte Spalte zählt die von jedem Modul deklarierten Komponententypen.",
+      "componentUsage": "Listet für jedes auf der Site bereitgestellte Modul die deklarierten Komponententypen und die Anzahl der Knoten genau dieses Typs unterhalb der Site auf. Komponenten ohne Instanzen werden ebenfalls aufgeführt; sortieren Sie die Spalte Nutzung aufsteigend, um sie nach oben zu holen.",
       "pagesWithoutTitle": "Seiten identifizieren, denen Titel in einer oder mehreren Sprachen fehlen. Der Bericht zeigt den Pfad und gibt an, welche Sprachen Titel definiert haben.",
       "pagesUntranslated": "Inhalte identifizieren, die nicht in eine bestimmte Sprache übersetzt wurden. Wählen Sie die Zielsprache aus, um Inhalte zu finden, die in anderen Sprachen vorhanden sind, aber die Übersetzung fehlt.",
       "liveContents": "Inhalte mit Live-Sichtbarkeitsbedingungen anzeigen. Dieser Bericht zeigt Inhalte mit angewendeten bedingten Sichtbarkeitsregeln, einschließlich der Bedingungen, des Übereinstimmungsstatus und des aktuellen Sichtbarkeitsstatus.",
@@ -297,6 +301,26 @@
         "columns": {
           "title": "Titel",
           "path": "Pfad"
+        }
+      },
+      "siteModules": {
+        "columns": {
+          "id": "Modul-ID",
+          "name": "Name",
+          "version": "Version",
+          "type": "Typ",
+          "dependency": "Bereitgestellt als",
+          "state": "Status",
+          "components": "Komponententypen"
+        }
+      },
+      "componentUsage": {
+        "columns": {
+          "module": "Modul-ID",
+          "moduleName": "Modul",
+          "component": "Komponententyp",
+          "label": "Bezeichnung",
+          "usage": "Nutzung"
         }
       }
     },

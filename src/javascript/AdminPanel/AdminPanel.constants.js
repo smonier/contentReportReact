@@ -396,6 +396,38 @@ const reports = [
         ]
     },
     {
+        id: '29',
+        labelKey: 'menu.siteModules',
+        descriptionKey: 'descriptions.siteModules',
+        type: 'legacy',
+        category: 'system',
+        fields: [],
+        columns: [
+            {key: 'id', labelKey: 'reports.siteModules.columns.id', sortable: true},
+            {key: 'name', labelKey: 'reports.siteModules.columns.name', sortable: true},
+            {key: 'version', labelKey: 'reports.siteModules.columns.version', sortable: true},
+            {key: 'type', labelKey: 'reports.siteModules.columns.type', sortable: true},
+            {key: 'dependency', labelKey: 'reports.siteModules.columns.dependency', sortable: true},
+            {key: 'state', labelKey: 'reports.siteModules.columns.state', sortable: true},
+            {key: 'components', labelKey: 'reports.siteModules.columns.components', sortable: true, type: 'number'}
+        ]
+    },
+    {
+        id: '30',
+        labelKey: 'menu.componentUsage',
+        descriptionKey: 'descriptions.componentUsage',
+        type: 'legacy',
+        category: 'system',
+        fields: [],
+        columns: [
+            {key: 'module', labelKey: 'reports.componentUsage.columns.module', sortable: true},
+            {key: 'moduleName', labelKey: 'reports.componentUsage.columns.moduleName', sortable: true},
+            {key: 'component', labelKey: 'reports.componentUsage.columns.component', sortable: true},
+            {key: 'label', labelKey: 'reports.componentUsage.columns.label', sortable: true},
+            {key: 'usage', labelKey: 'reports.componentUsage.columns.usage', sortable: true, type: 'number'}
+        ]
+    },
+    {
         id: 'usersGroups',
         labelKey: 'menu.usersGroups',
         descriptionKey: 'descriptions.usersGroups',
