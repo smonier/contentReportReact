@@ -10,7 +10,7 @@ This file starts at the change below. For releases before it, see the
 
 ## [Unreleased]
 
-## [2.1.0] - 2026-09-02
+## [2.1.0] - 2026-09-04
 
 ### Added
 
