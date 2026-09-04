@@ -96,7 +96,7 @@ mvn clean install
 
 3. Deploy the generated JAR to your Jahia server:
 ```bash
-cp target/content-reports-react-2.0.1-SNAPSHOT.jar $JAHIA_HOME/modules/
+cp target/content-reports-react-*.jar $JAHIA_HOME/modules/
 ```
 
 ### From Binary
@@ -136,6 +136,7 @@ cp target/content-reports-react-2.0.1-SNAPSHOT.jar $JAHIA_HOME/modules/
 
 Reports support various column types:
 - **Text**: Standard text display
+- **Number**: Numeric values, sorted numerically (a `0` displays as `0`, not as an empty cell)
 - **Date**: Formatted date/time values
 - **Boolean**: Checkmark/cross indicators
 - **Link**: Clickable content links
@@ -472,35 +473,14 @@ For issues, questions, or contributions:
 
 ## Changelog
 
-### Version 2.0.1-SNAPSHOT
-- Updated module naming to kebab-case (content-reports-react) for Maven artifact consistency
-- Enhanced module key references in webpack and route configurations
-
-### Version 2.0.0
-- Multiple report additions and improvements
-
-### Version 1.0.0-SNAPSHOT (Deprecated)
-- Initial release
-- 12+ pre-configured reports
-- Site overview dashboard with comprehensive metrics
-- Multi-language support (EN, FR, DE, ES, IT, PT)
-- Modern React UI with Moonstone design system
-- GraphQL API for report access
-- Customizable report framework
-- Asset tracking (files and images)
-- Workflow task monitoring
-- ACL inheritance break detection
-- **Content Activity Analytics (Last 30 Days)**:
-  - New content created tracking
-  - Modified content items monitoring
-  - Published content items tracking
-  - Published vs unpublished nodes comparison
-  - Average time from creation to publication metric
-  - Top 5 contributors with ranking (medal badges)
+Release notes live in [CHANGELOG.md](CHANGELOG.md), one section per version, following
+[Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Each release is also published on the
+repository's [Releases](https://github.com/Jahia/contentReportReact/releases) page with the module
+jar attached.
 
 ## Roadmap
 
-- [ ] Export reports to CSV/Excel
+- [x] Export reports to CSV and JSON (every report table, plus the Site overview activity log)
 - [ ] Scheduled report generation
 - [ ] Email notifications for report results
 - [ ] Custom report builder UI
